@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Eljour-block · Variant A — lista + lugnt svar</title>
+<style>
+  html { font-size: 62.5%; }
+  :root {
+    --bg:#f5f9ff; --surface:#ffffff; --ink:#090b32; --ink-body:#3b3f59; --ink-soft:#6b708c;
+    --teal:#00a991; --teal-dark:#0a8f7c; --line:#e6ecf6;
+    --akut-bg:#fdeceb; --akut-ink:#b3261e;
+    --snart-bg:#fff3de; --snart-ink:#8a5800;
+    --vanta-bg:#e7f6ef; --vanta-ink:#0c7a5b;
+    --r:1.6rem; --r-s:1rem; --m:.28s;
+    font-family:"Outfit",system-ui,-apple-system,"Segoe UI",sans-serif;
+  }
+  *,*::before,*::after{ box-sizing:border-box; }
+  body{ margin:0; background:var(--bg); color:var(--ink-body); -webkit-font-smoothing:antialiased; }
+
+  .eb{ padding:clamp(2.4rem,5vw,5.6rem) clamp(1.6rem,4vw,3.2rem); }
+  .eb__wrap{ max-width:88rem; margin-inline:auto; }
+  .eb__title{
+    margin:0 0 clamp(2rem,3vw,3.2rem); color:var(--ink);
+    font-size:clamp(2.4rem,3.4vw,3.4rem); font-weight:500; line-height:1.15; letter-spacing:-0.01em;
+    text-wrap:balance; max-width:22ch;
+  }
+
+  .eb__panes{
+    display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.15fr); gap:0;
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--r); overflow:hidden;
+  }
+
+  .eb__list{ list-style:none; margin:0; padding:.8rem; border-right:1px solid var(--line); }
+  .eb__row{
+    appearance:none; width:100%; cursor:pointer; background:transparent; border:0; text-align:left;
+    display:flex; align-items:center; gap:1.2rem; padding:1.4rem 1.4rem; border-radius:var(--r-s);
+    font-family:inherit; color:var(--ink); font-size:1.6rem; font-weight:500;
+    transition:background var(--m) ease;
+  }
+  .eb__row:hover{ background:#f3f7fd; }
+  .eb__row:focus-visible{ outline:2px solid var(--teal); outline-offset:-2px; }
+  .eb__row[aria-selected="true"]{ background:#eef4fc; }
+  .eb__dot{ width:.9rem; height:.9rem; border-radius:50%; flex:none; }
+  .eb__label{ flex:1; }
+  .eb__mini{ width:.8rem; height:.8rem; border-radius:50%; flex:none; opacity:.0; }
+  .eb__row[aria-selected="true"] .eb__mini{ opacity:1; background:var(--teal); }
+
+  .t-akut{ background:var(--akut-bg); color:var(--akut-ink); } .d-akut{ background:#e24b4a; }
+  .t-snart{ background:var(--snart-bg); color:var(--snart-ink); } .d-snart{ background:#e3a008; }
+  .t-vanta{ background:var(--vanta-bg); color:var(--vanta-ink); } .d-vanta{ background:#1d9e75; }
+
+  .eb__answer{ padding:clamp(2rem,3vw,3.2rem); display:flex; flex-direction:column; gap:1.4rem; min-height:30rem; }
+  .eb__tag{ align-self:flex-start; font-size:1.2rem; font-weight:600; padding:.5rem 1.2rem; border-radius:99rem; }
+  .eb__seen{ margin:0; color:var(--ink); font-size:clamp(2rem,2.4vw,2.4rem); font-weight:500; line-height:1.2; }
+  .eb__label-s{ display:block; font-size:1.2rem; font-weight:600; color:var(--teal); margin-bottom:.4rem; letter-spacing:.02em; }
+  .eb__means{ margin:0; font-size:1.6rem; line-height:1.6; color:var(--ink-body); max-width:54ch; }
+  .eb__do{ margin:0; font-size:1.6rem; line-height:1.55; color:var(--ink); font-weight:500; max-width:54ch; }
+  .eb__112{ margin:0; font-size:1.5rem; line-height:1.45; color:var(--akut-ink); font-weight:500;
+    background:var(--akut-bg); border-radius:var(--r-s); padding:1.2rem 1.4rem; }
+  .eb__112 a{ color:var(--akut-ink); }
+  .eb__ring{
+    display:inline-flex; align-items:center; justify-content:center; gap:.9rem; align-self:flex-start;
+    margin-top:.4rem; padding:1.4rem 2.4rem; min-height:5rem; border-radius:99rem;
+    background:var(--teal); color:#fff; font-size:1.6rem; font-weight:600; text-decoration:none;
+    transition:background var(--m) ease, transform var(--m) ease;
+  }
+  .eb__ring:hover{ background:var(--teal-dark); transform:translateY(-1px); }
+  .eb__ring:focus-visible{ outline:2px solid var(--ink); outline-offset:3px; }
+  .eb__ring svg{ width:1.9rem; height:1.9rem; }
+  .eb__prompt{ margin:auto 0; color:var(--ink-soft); font-size:1.7rem; line-height:1.5; max-width:34ch; }
+
+  .eb__answer.is-swapping > *{ opacity:0; transform:translateY(.5rem); }
+  .eb__answer > *{ transition:opacity var(--m) ease, transform var(--m) ease; }
+
+  .eb__foot{ margin:1.8rem .4rem 0; font-size:1.4rem; line-height:1.5; color:var(--ink-soft); }
+
+  @media (max-width:768px){
+    .eb__panes{ grid-template-columns:1fr; }
+    .eb__list{ border-right:0; border-bottom:1px solid var(--line); }
+    .eb__answer{ min-height:0; }
+    .eb__prompt{ margin:0; }
+  }
+  @media (max-width:480px){
+    .eb__ring{ align-self:stretch; }
+  }
+  @media (prefers-reduced-motion:reduce){ .eb__answer > *,.eb__ring{ transition:none; } }
+</style>
+</head>
+<body>
+  <section class="eb" aria-labelledby="ebTitle">
+    <div class="eb__wrap">
+      <h2 class="eb__title" id="ebTitle">Är något fel med elen? Tryck på det du märker.</h2>
+      <div class="eb__panes">
+        <ul class="eb__list" id="ebList" role="listbox" aria-label="Vanliga tecken på elfel"></ul>
+        <div class="eb__answer" id="ebAnswer" aria-live="polite"></div>
+      </div>
+      <p class="eb__foot">Jour dygnet runt. Vi har som mål att en jourmontör är på plats inom en timme. Fast pris, sagt innan vi åker.</p>
+    </div>
+  </section>
+
+  <script>
+    var PHONE_DISPLAY="010-265 79 79", PHONE_TEL="+46102657979";
+    var PHONE_SVG='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15.5 15.5 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.2.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.3 1z"/></svg>';
+    var SEV={akut:["t-akut","d-akut","Akut · agera nu"],snart:["t-snart","d-snart","Ring oss snart"],vanta:["t-vanta","d-vanta","Kan ofta vänta"]};
+
+    var SYMPTOMS=[
+      {id:"stromavbrott",label:"Strömavbrott",sev:"vanta",e112:false,
+        means:"Mörkt hos grannarna också? Då är det elnätet, inte ditt fel. Bara hos dig kan en jordfelsbrytare ha löst ut.",
+        action:"Kolla grannarna. Prova jordfelsbrytaren en gång. Kvarstår det, ring oss."},
+      {id:"branlukt",label:"Brännlukt eller rök",sev:"akut",e112:true,
+        means:"Nästan alltid en glappkontakt som hettats upp. Plasten kan vara nära sin tändpunkt.",
+        action:"Slå av huvudbrytaren. Rör inte centralen mer än så."},
+      {id:"gnistor",label:"Gnistor eller smäll",sev:"akut",e112:true,
+        means:"Gnistor, ett smäll eller ett sprakande ljud i el är en ljusbåge. Den kan bli tusentals grader på ett ögonblick.",
+        action:"Slå av huvudbrytaren direkt."},
+      {id:"varmt-uttag",label:"Varmt eller missfärgat uttag",sev:"akut",e112:false,
+        means:"Värme i ett uttag är kontaktmotstånd, ofta ett glapp som bygger värme bakom väggen.",
+        action:"Dra ur, använd inte uttaget, ring oss. Missfärgat eller luktar: slå av gruppen."},
+      {id:"elstot",label:"Elstöt",sev:"akut",e112:false,
+        means:"Att känna ström vid en apparat, ett uttag eller en kran tyder på jordfel.",
+        action:"Använd inte det som gav stöt. Slå av gruppen och ring oss."},
+      {id:"vatten",label:"Vatten nära elen",sev:"akut",e112:false,
+        means:"Vatten vid uttag, central eller ledning är en direkt risk för kortslutning och stöt.",
+        action:"Rör inte. Bryt strömmen om du kan göra det säkert, sedan ring oss."},
+      {id:"sakring",label:"Säkring eller jordfelsbrytare löser ut",sev:"snart",e112:false,
+        means:"En enstaka gång är oftast överlast. Gång på gång kan vara en kortslutning eller ett jordfel.",
+        action:"Två återställningar är taket. Löser den ut en tredje gång, lämna den av och ring oss."},
+      {id:"flimmer",label:"Flimrande ljus",sev:"snart",e112:false,
+        means:"Flimrar ljuset när stora apparater drar igång kan det vara ett glapp i nollskenan.",
+        action:"Notera vid vilken apparat det händer. Ring oss så tittar vi på det."}
+    ];
+
+    function track(ev,d){ window.dataLayer=window.dataLayer||[]; window.dataLayer.push(Object.assign({event:"ampy_ej_"+ev},d||{})); }
+
+    var list=document.getElementById("ebList"), answer=document.getElementById("ebAnswer");
+    var reduce=window.matchMedia("(prefers-reduced-motion:reduce)").matches, timer=null, current=null;
+
+    SYMPTOMS.forEach(function(s){
+      var sev=SEV[s.sev];
+      var b=document.createElement("button");
+      b.className="eb__row"; b.id="row-"+s.id; b.type="button"; b.setAttribute("role","option"); b.setAttribute("aria-selected","false");
+      b.innerHTML='<span class="eb__dot '+sev[1]+'"></span><span class="eb__label">'+s.label+'</span><span class="eb__mini"></span>';
+      b.addEventListener("click",function(){ select(s.id); });
+      var li=document.createElement("li"); li.appendChild(b); list.appendChild(li);
+    });
+
+    function prompt(){
+      answer.innerHTML='<p class="eb__prompt">Tryck på ett tecken till vänster, så visar vi vad det kan betyda och vad du gör nu.</p>';
+    }
+    function render(s){
+      var sev=SEV[s.sev];
+      var e112=s.e112?'<p class="eb__112">Ser du lågor eller rök? Ring <a href="tel:112">112</a> först, sedan oss.</p>':"";
+      answer.innerHTML=
+        '<span class="eb__tag '+sev[0]+'">'+sev[2]+'</span>'+
+        '<p class="eb__seen">'+s.label+'</p>'+
+        '<p class="eb__means"><span class="eb__label-s">Vad det kan betyda</span>'+s.means+'</p>'+
+        '<p class="eb__do"><span class="eb__label-s">Gör så här nu</span>'+s.action+'</p>'+
+        e112+
+        '<a class="eb__ring" href="tel:'+PHONE_TEL+'" data-call="'+s.id+'">'+PHONE_SVG+'Ring '+PHONE_DISPLAY+'</a>';
+    }
+    function select(id){
+      var s=SYMPTOMS.filter(function(x){return x.id===id;})[0]; if(!s) return;
+      Array.prototype.forEach.call(list.querySelectorAll(".eb__row"),function(r){ r.setAttribute("aria-selected", r.id==="row-"+id?"true":"false"); });
+      current=id;
+      if(reduce){ render(s); } else {
+        if(timer) clearTimeout(timer);
+        answer.classList.add("is-swapping");
+        timer=setTimeout(function(){ render(s); answer.classList.remove("is-swapping"); timer=null; },140);
+      }
+      track("symptom_select",{symptom:id,severity:s.sev});
+    }
+    answer.addEventListener("click",function(e){
+      if(e.target.closest("[data-call]")) track("cta_call_click",{symptom:current});
+      if(e.target.closest('a[href="tel:112"]')) track("cta_112_click",{symptom:current});
+    });
+    prompt(); track("view",{});
+  </script>
+</body>
+</html>

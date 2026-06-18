@@ -1,49 +1,50 @@
-# Ampy — Eljour "Något känns fel med elen?" symptom-block
+# Ampy — Eljour "Är något fel med elen?" symptom-block
 
-A **web-block** (not a standalone tool) for the top of every **eljour landing page** — the first thing a
-worried person meets on scroll. Six symptom-chips → an honest, **severity-calibrated** risk-reveal → a
-**"Ring oss"** call CTA (010-265 79 79). The conversion is the **phone call**, not a form. Toggle directly
-between symptoms — no wizard.
+A **web-block** for the top of every **eljour landing page** — the first thing a worried person meets on
+scroll. Tryck på det du märker → ärligt, severity-calibrated besked om vad det kan betyda och vad du gör nu →
+**Ring oss** (010-265 79 79). Konverteringen är samtalet, inget formulär.
 
-**Live preview:** https://julius447.github.io/Eljour-block/ (works on mobile + desktop — resize the window).
+**Live preview (välj upplägg):** https://julius447.github.io/Eljour-block/ — open a variant and resize the
+window for mobile/desktop.
 
-Built by `/ampy`. Full pipeline record + provenance for every fact: [`docs/pipeline-record.md`](docs/pipeline-record.md).
+This is the **v2 redesign** after v1 was scrapped (too dark/compact/gradient-heavy, weak copy). Three
+buildable directions to choose between:
 
-## Files
-| File | What it is |
+| Variant | Idé | Live |
+|---|---|---|
+| **C · Dragspels-lista** *(rekommendation)* | ren lista, raden fälls ut på plats; mobil-native, mest scanbar | `/c/` |
+| **A · Lista + lugnt svar** | meny vänster, svar höger på desktop; stackar på mobil | `/a/` |
+| **B · Ett stort tydligt svar** | liten väljare + ett luftigt fokussvar i taget | `/b/` |
+
+Each `*/index.html` is a self-contained prototype (real Ampy tokens inline). v1 is archived in `archive/v1/`.
+Full v1 pipeline record: [`docs/pipeline-record.md`](docs/pipeline-record.md).
+
+## The symptom set (researched + simplified)
+Cross-checked ampy.se against five independent Swedish eljour firms. Short noun labels, three honest
+severity levels — not six red alarms (that calibration is what makes the akut ones believable):
+
+| Symptom | Allvar |
 |---|---|
-| `index.html` | **Standalone prototype** — token-mirrored, self-contained, verifiable in a browser/Claude Preview. The source of truth for look + behaviour. |
-| `eljour-block.css` | **Bricks-paste CSS** — binds to the global production `ap*` tokens (already defined site-wide). Paste into the section's custom CSS or Settings → Custom CSS. |
-| `eljour-block.js` | **Behaviour** — the `SYMPTOMS` data + the renderer. Drop into a Bricks Code element (JS) or enqueue. Renders into any `.ampy-eljour` shell on the page. |
-| `eljour-block.html` | **The static shell** (eyebrow, hook, sub, empty containers, methodology). Paste as a Bricks Code element (HTML). |
+| Brännlukt eller rök | Akut · 112 vid rök |
+| Gnistor eller smäll | Akut · 112 |
+| Elstöt | Akut |
+| Vatten nära elen | Akut |
+| Varmt eller missfärgat uttag | Akut |
+| Säkring eller jordfelsbrytare löser ut | Ring snart |
+| Flimrande ljus | Ring snart |
+| Strömavbrott | Kan ofta vänta |
 
-## Install (Bricks)
-1. Add a **Code element** high on the eljour page; paste `eljour-block.html`.
-2. Load `eljour-block.css` (Settings → Custom CSS, or the section's custom CSS).
-3. Load `eljour-block.js` (the Code element's JS field, or enqueue site-wide). It auto-mounts into every
-   `.ampy-eljour` on the page.
+## Design + candour rules baked in
+- **Light surface, dark text, Ampy-teal only on the Ring button** (the v1 dark/green surface is gone).
+- **Severity = a small high-contrast tag**, never a gradient panel wash (that was v1's readability killer).
+- **One heading, no eyebrow, no paragraph.** Short noun labels, not sentences.
+- **112 before us** on brännlukt/gnistor; honest talk-down on strömavbrott (often the grid, not your fault).
+- **No invented price** (jour = inställelse + timtaxa, sagt innan vi åker); no "1000+/5.0/hela Sverige";
+  no em-dashes, no "!", Outfit only (brand font).
 
-## The candour rules baked in (do NOT weaken)
-- **Severity is calibrated honestly** — not every symptom is akut (2 akut · 3 "ring idag" · 1 "kan vänta").
-  The honesty that *some can wait* is what makes the akut ones believable. We never inflate urgency to sell
-  a callout.
-- **112 before us.** Genuinely acute symptoms (brännlukt, gnistor) show **"Ring 112 först. Sedan oss."** +
-  a `tel:112` link *before* the Ampy CTA.
-- **No invented numbers.** The eljour price is shown as *structure* (inställelseavgift + timtaxa, sagt innan
-  vi åker), never a fabricated figure. Stats are sourced (Elsäkerhetsverket 45 bränder 2023; 40 % glapp; 78 °C).
-- **No "1000+ kunder", "5.0", or present "hela Sverige" coverage** — none are usable facts.
-- **No em-dashes, no "!", no superlatives** (ampy-rost §8.1). Outfit only (the brand font — single-font is correct).
-
-## Owner / dev gates before go-live
-- [ ] **Footprint** — how does eljour coverage read per page? Don't let "i hela Sverige" appear if the lead
-      lands outside the **27-kommun** live Stockholm-region set (national rollout = FUTURE, owner-confirmed).
-- [ ] **Eljour price** — provide the inställelseavgift/jour-timtaxa figure, or confirm "quote-only".
-- [ ] **Electrician sign-off** on the six symptom → risk → action mappings (especially the akut/112 calls).
-- [ ] **Verify** the Elsäkerhetsverket "45 bostadsbränder 2023" stat is current/attributable before ship.
-- [ ] **Analytics** — wire the `ampy_ej_*` dataLayer events behind Consent Mode v2 (consent-gated).
-- [ ] (Optional) make the copy **ACF/editor-driven** — swap the `SYMPTOMS` source, keep the renderer.
-
-## Verified (Claude Preview, desktop + mobile)
-Renders clean (no console errors); akut path shows the 112-first line + the call; "vänta" path correctly
-hides the 112 line; single-select; mobile re-layouts to full-width stacked chips; `prefers-reduced-motion`
-honoured.
+## Owner / dev gates before go-live (once a variant is chosen)
+- [ ] Pick the variant → I build the production Bricks-paste version (CSS/JS/shell).
+- [ ] **Footprint** — don't let "i hela Sverige" show if the lead lands outside the 27-kommun live set.
+- [ ] **Eljour price** — inställelseavgift/jour-timtaxa figure, or confirm "quote-only".
+- [ ] **Electrician sign-off** on the eight symptom → risk → action mappings (esp. akut/112).
+- [ ] **Analytics** — wire `ampy_ej_*` behind Consent Mode v2.
