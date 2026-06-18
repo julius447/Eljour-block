@@ -31,7 +31,7 @@
   .eb__title{ margin:0; color:var(--ink); font-size:clamp(2.6rem,3.3vw,3.6rem); font-weight:500;
     line-height:1.12; letter-spacing:-0.015em;
     display:grid; grid-template-columns:var(--col-l) var(--col-r); column-gap:var(--col-gap); align-items:baseline; }
-  .eb__title-a{ } .eb__title-b{ }
+  .eb__title-b{ font-size:.74em; font-weight:400; color:var(--ink-soft); padding-inline-start:4.9rem; }
 
   /* ---- global green call CTA ---- */
   .eb__cta{ display:flex; align-items:center; justify-content:space-between; gap:1.4rem; width:100%;
@@ -41,15 +41,19 @@
     line-height:1.1; transition:transform var(--m) ease, box-shadow var(--m) ease; }
   .eb__cta:hover{ transform:translateY(-1px);
     box-shadow:0 1.4rem 3.2rem rgba(4,110,90,.40), inset 0 1px 0 rgba(255,255,255,.22); }
-  .eb__cta:focus-visible{ outline:2px solid var(--ink); outline-offset:3px; }
+  .eb__cta:focus-visible{ outline:2px solid var(--teal-dark); outline-offset:3px; }
   .eb__cta-txt{ display:inline-flex; align-items:baseline; gap:.6rem; white-space:nowrap; min-width:0; }
   .eb__cta-txt b{ font-weight:600; }
   .eb__cta-ic{ position:relative; display:inline-flex; align-items:center; justify-content:center; flex:none; width:2.4rem; height:2.4rem; }
   .eb__cta-ic svg{ width:2.4rem; height:2.4rem; position:relative; z-index:1; }
   .eb__cta-ic::after{ content:""; position:absolute; left:50%; top:50%; width:2rem; height:2rem;
-    border-radius:50%; background:rgba(255,255,255,.42); transform:translate(-50%,-50%) scale(.55);
-    animation:eb-cta-ring 1.9s cubic-bezier(.25,.6,.3,1) infinite; z-index:0; }
-  @keyframes eb-cta-ring{ 0%{ transform:translate(-50%,-50%) scale(.55); opacity:.5 } 70%{ opacity:0 } 100%{ transform:translate(-50%,-50%) scale(1.85); opacity:0 } }
+    border-radius:50%; background:rgba(255,255,255,.3); transform:translate(-50%,-50%) scale(.55);
+    animation:none; z-index:0; }
+  /* one beacon at a time: the aside CTA pulses until a symptom is open, then the open panel's CTA does */
+  .eb__call .eb__cta-ic::after,
+  .eb__row[aria-expanded="true"] + .eb__panel .eb__cta-ic::after{ animation:eb-cta-ring 2s cubic-bezier(.25,.6,.3,1) infinite; }
+  .eb__grid.is-symptom-open .eb__call .eb__cta-ic::after{ animation:none; }
+  @keyframes eb-cta-ring{ 0%{ transform:translate(-50%,-50%) scale(.55); opacity:.4 } 70%{ opacity:0 } 100%{ transform:translate(-50%,-50%) scale(1.85); opacity:0 } }
 
   /* ---- two-pane ---- */
   .eb__grid{ display:grid; grid-template-columns:var(--col-l) var(--col-r); align-items:start; column-gap:var(--col-gap); }
@@ -129,6 +133,7 @@
   @media (max-width:992px){
     .eb__title{ display:block; text-align:center; max-width:22ch; margin-inline:auto; }
     .eb__title-a, .eb__title-b{ display:block; }
+    .eb__title-b{ padding-inline-start:0; }
     .eb__grid{ display:block; }
     .eb__status{ align-self:center; }
     .eb__list{ margin:2rem 0; }
@@ -150,7 +155,7 @@
   <section class="eb" aria-labelledby="ebTitle">
     <div class="eb__wrap">
       <header class="eb__head">
-        <h2 class="eb__title" id="ebTitle"><span class="eb__title-a">Är något fel med elen? </span><span class="eb__title-b">Tryck på det du upplever.</span></h2>
+        <h2 class="eb__title" id="ebTitle"><span class="eb__title-a">Är något fel med elen?</span><span class="eb__title-b">Tryck på det du upplever.</span></h2>
       </header>
 
       <div class="eb__grid">
@@ -249,7 +254,7 @@
     var hidden=SYMPTOMS.length-VISIBLE;
     if(hidden>0){
       var moreLi=document.createElement("li"); moreLi.className="eb__more-li";
-      moreLi.innerHTML='<button class="eb__more" type="button" aria-expanded="false">'+
+      moreLi.innerHTML='<button class="eb__more" type="button" aria-expanded="false" aria-controls="ebList">'+
         '<span class="eb__more-txt">Se fler tecken ('+hidden+')</span>'+
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>';
       list.appendChild(moreLi);
@@ -279,6 +284,7 @@
       Array.prototype.forEach.call(list.querySelectorAll(".eb__row"),function(r){ r.setAttribute("aria-expanded","false"); });
       if(!wasOpen){ row.setAttribute("aria-expanded","true"); track("symptom_select",{symptom:row.id.replace("row-","")}); }
       syncInert();
+      document.querySelector(".eb__grid").classList.toggle("is-symptom-open", !!list.querySelector('.eb__row[aria-expanded="true"]'));
     });
     document.querySelector('.eb__call').addEventListener("click",function(e){ if(e.target.closest("[data-call]")) track("cta_call_click",{symptom:"aside"}); });
     track("view",{});
