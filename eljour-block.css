@@ -1,0 +1,268 @@
+/* =====================================================================
+   Ampy — Eljour "Något känns fel med elen?" symptom -> risk-reveal block
+   Binds to the global production ap* tokens (already defined site-wide).
+   Paste into the section's Bricks custom-CSS field, or Settings > Custom CSS.
+
+   Serious/akut register: midnight surface, teal action. The three severity
+   colours are SCOPED to this device (never global --state-* tokens) per
+   foretagsdata §11.2 (the LED amber rule). The severity tint is read
+   environmentally across the whole panel — it carries the candour
+   calibration (akut/snart/vänta), it is not decoration.
+
+   Token defects handled (foretagsdata §11.4): an explicit shadow is supplied
+   (never relies on the undefined --shadow-primary -> #bebebe fallback);
+   no binding to the malformed --apspace-4xs; breakpoints are 992/768/480.
+   ===================================================================== */
+
+.ampy-eljour {
+  background: var(--apsky-mist);
+  padding: var(--apspace-xl) var(--apspace-l);
+}
+
+.ampy-eljour__card {
+  /* scoped severity palette — lives only inside this device */
+  --ej-sev-akut:  #ff6f61;  /* warm coral — genuinely acute only */
+  --ej-sev-snart: #ffc24b;  /* amber — call today */
+  --ej-sev-vanta: var(--apemerald-flow); /* calm — can usually wait */
+  --ej-hairline:  rgba(255, 255, 255, 0.14);
+  --ej-ink-soft:  rgba(255, 255, 255, 0.82);
+  --ej-ink-faint: rgba(255, 255, 255, 0.60);
+  --ej-shadow:    0 1.2rem 4rem rgba(9, 11, 50, 0.18);
+
+  position: relative;
+  overflow: hidden;
+  max-width: var(--apmax-screen-width, 128rem);
+  margin-inline: auto;
+  background: var(--apmidnight-blue);
+  color: var(--appure-white, #ffffff);
+  border-radius: var(--apradius-l);
+  box-shadow: var(--ej-shadow);
+  padding: var(--apspace-xl);
+
+  /* enter-view fade (runOnce, <=300ms) — driven by .is-visible from JS */
+  opacity: 0;
+  transform: translateY(1.4rem);
+  transition: opacity 0.28s ease, transform 0.28s ease;
+}
+.ampy-eljour__card.is-visible { opacity: 1; transform: none; }
+
+/* brand-glow — surface treatment behind the header, NOT a second device */
+.ampy-eljour__card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(46% 60% at 90% 6%, rgba(0, 169, 145, 0.34), transparent 70%),
+    radial-gradient(40% 48% at 98% 0%, rgba(85, 255, 154, 0.14), transparent 72%);
+}
+.ampy-eljour__head,
+.ampy-eljour__chips,
+.ampy-eljour__reveal,
+.ampy-eljour__foot { position: relative; z-index: 1; }
+
+/* ---- header / the hook ---- */
+.ampy-eljour__head { display: flex; flex-direction: column; gap: var(--apspace-2xs); max-width: 62ch; }
+
+.ampy-eljour__eyebrow {
+  display: inline-flex; align-items: center; gap: var(--apspace-2xs);
+  margin: 0;
+  font-size: var(--aptext-s);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--apteal-core);
+}
+.ampy-eljour__eyebrow svg { flex: none; width: 1.6rem; height: 1.6rem; }
+
+.ampy-eljour__title {
+  margin: 0;
+  font-size: var(--aptext-2xl);
+  font-weight: 500;
+  line-height: 1.15;
+  color: var(--appure-white, #ffffff);
+  text-wrap: balance;
+}
+
+.ampy-eljour__sub {
+  margin: 0;
+  font-size: var(--aptext-m);
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--ej-ink-soft);
+}
+.ampy-eljour__sub b { font-weight: 600; color: var(--appure-white, #ffffff); }
+
+/* ---- chip row (toggle directly — no wizard) ---- */
+.ampy-eljour__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--apspace-2xs);
+  margin-top: var(--apspace-m);
+}
+.ampy-eljour__chip {
+  appearance: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--aptext-s);
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--appure-white, #ffffff);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--ej-hairline);
+  border-radius: var(--apradius-full);
+  padding: 1.1rem 1.7rem;
+  min-height: 4.4rem; /* touch target */
+  display: inline-flex; align-items: center; gap: 0.8rem;
+  transition: background 0.28s ease, border-color 0.28s ease, color 0.28s ease;
+}
+.ampy-eljour__chip::before {
+  content: ""; width: 0.7rem; height: 0.7rem; border-radius: 50%;
+  background: currentColor; opacity: 0.5; flex: none;
+}
+.ampy-eljour__chip:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.28); }
+.ampy-eljour__chip:focus-visible { outline: 2px solid var(--apneon-mint); outline-offset: 2px; }
+.ampy-eljour__chip[aria-pressed="true"] {
+  background: var(--apteal-core);
+  border-color: var(--apteal-core);
+  color: var(--apmidnight-blue);
+  font-weight: 600;
+}
+.ampy-eljour__chip[aria-pressed="true"]::before { opacity: 1; background: var(--apmidnight-blue); }
+
+/* ---- the risk reveal ---- */
+.ampy-eljour__reveal {
+  margin-top: var(--apspace-m);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--ej-hairline);
+  border-radius: var(--apradius-m);
+  padding: var(--apspace-l);
+  min-height: 22rem; /* reserve space — no page jump on toggle */
+  transition: background 0.28s ease, border-color 0.28s ease;
+}
+/* Severity read environmentally: a soft tint washes the whole panel in the
+   calibrated hue, reinforcing the labelled pill — NOT a lone accent stripe. */
+.ampy-eljour__reveal[data-severity="akut"] {
+  background: linear-gradient(180deg, rgba(255, 111, 97, 0.11), rgba(255, 111, 97, 0.03));
+  border-color: rgba(255, 111, 97, 0.30);
+}
+.ampy-eljour__reveal[data-severity="snart"] {
+  background: linear-gradient(180deg, rgba(255, 194, 75, 0.10), rgba(255, 194, 75, 0.03));
+  border-color: rgba(255, 194, 75, 0.28);
+}
+.ampy-eljour__reveal[data-severity="vanta"] {
+  background: linear-gradient(180deg, rgba(57, 194, 129, 0.10), rgba(57, 194, 129, 0.03));
+  border-color: rgba(57, 194, 129, 0.26);
+}
+
+.ampy-eljour__slide {
+  display: flex; flex-direction: column; gap: var(--apspace-s);
+  opacity: 1; transform: none;
+  transition: opacity 0.28s ease, transform 0.28s ease;
+}
+.ampy-eljour__slide.is-swapping { opacity: 0; transform: translateY(0.6rem); }
+
+.ampy-eljour__sevrow { display: flex; align-items: center; gap: var(--apspace-s); flex-wrap: wrap; }
+.ampy-eljour__sev {
+  display: inline-flex; align-items: center; gap: 0.7rem;
+  font-size: var(--aptext-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.6rem 1.1rem;
+  border-radius: var(--apradius-full);
+}
+.ampy-eljour__sev::before { content: ""; width: 0.8rem; height: 0.8rem; border-radius: 50%; background: currentColor; }
+.ampy-eljour__reveal[data-severity="akut"]  .ampy-eljour__sev { color: var(--ej-sev-akut);  background: rgba(255, 111, 97, 0.14); }
+.ampy-eljour__reveal[data-severity="snart"] .ampy-eljour__sev { color: var(--ej-sev-snart); background: rgba(255, 194, 75, 0.14); }
+.ampy-eljour__reveal[data-severity="vanta"] .ampy-eljour__sev { color: var(--ej-sev-vanta); background: rgba(57, 194, 129, 0.16); }
+
+.ampy-eljour__seen { margin: 0; font-size: var(--aptext-l); font-weight: 500; line-height: 1.2; color: var(--appure-white, #ffffff); }
+
+.ampy-eljour__block { display: flex; flex-direction: column; gap: 0.4rem; }
+.ampy-eljour__label {
+  margin: 0; font-size: var(--aptext-xs); font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--apteal-core);
+}
+.ampy-eljour__body { margin: 0; font-size: var(--aptext-m); font-weight: 300; line-height: 1.5; color: var(--ej-ink-soft); }
+.ampy-eljour__body b { font-weight: 600; color: var(--appure-white, #ffffff); }
+
+.ampy-eljour__action {
+  display: flex; gap: var(--apspace-xs); align-items: flex-start;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--apradius-s);
+  padding: var(--apspace-s);
+}
+.ampy-eljour__action svg { flex: none; width: 2rem; height: 2rem; color: var(--apteal-core); margin-top: 0.2rem; }
+.ampy-eljour__action .ampy-eljour__body { color: var(--appure-white, #ffffff); }
+
+/* the 112-first line — only on genuinely acute symptoms */
+.ampy-eljour__emerg {
+  display: none;
+  align-items: center; gap: var(--apspace-xs);
+  font-size: var(--aptext-m); font-weight: 500; line-height: 1.4;
+  color: var(--appure-white, #ffffff);
+  background: rgba(255, 111, 97, 0.12);
+  border: 1px solid rgba(255, 111, 97, 0.45);
+  border-radius: var(--apradius-s);
+  padding: var(--apspace-s);
+}
+.ampy-eljour__reveal[data-emergency="true"] .ampy-eljour__emerg { display: flex; }
+.ampy-eljour__emerg b { color: var(--ej-sev-akut); }
+.ampy-eljour__emerg a { color: var(--appure-white, #ffffff); text-decoration: underline; text-underline-offset: 2px; }
+
+/* ---- CTA: the conversion is the call ---- */
+.ampy-eljour__cta { display: flex; flex-direction: column; gap: var(--apspace-2xs); margin-top: var(--apspace-2xs); }
+.ampy-eljour__call {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--apspace-xs);
+  align-self: flex-start;
+  font-family: inherit; font-size: var(--aptext-l); font-weight: 600; line-height: 1;
+  color: var(--apmidnight-blue);
+  background: var(--apteal-core);
+  border: none; border-radius: var(--apradius-full);
+  padding: 1.6rem 2.8rem; min-height: 5.4rem;
+  text-decoration: none; cursor: pointer;
+  transition: transform 0.28s ease, background 0.28s ease, box-shadow 0.28s ease;
+}
+.ampy-eljour__call svg { width: 2rem; height: 2rem; }
+.ampy-eljour__call:hover { background: var(--apemerald-flow); transform: translateY(-1px); box-shadow: 0 0.8rem 2rem rgba(0, 169, 145, 0.3); }
+.ampy-eljour__call:focus-visible { outline: 2px solid var(--apneon-mint); outline-offset: 3px; }
+
+.ampy-eljour__trust { margin: 0; font-size: var(--aptext-s); font-weight: 300; line-height: 1.45; color: var(--ej-ink-faint); }
+.ampy-eljour__trust b { font-weight: 600; color: var(--ej-ink-soft); }
+
+/* ---- footer: methodology / honesty ---- */
+.ampy-eljour__foot { margin-top: var(--apspace-m); padding-top: var(--apspace-s); border-top: 1px solid var(--ej-hairline); }
+.ampy-eljour__details { font-size: var(--aptext-s); color: var(--ej-ink-faint); }
+.ampy-eljour__details summary {
+  cursor: pointer; font-weight: 600; color: var(--ej-ink-soft); list-style: none;
+  display: inline-flex; align-items: center; gap: 0.8rem; padding: 0.4rem 0;
+}
+.ampy-eljour__details summary::-webkit-details-marker { display: none; }
+.ampy-eljour__details summary::before { content: "+"; color: var(--apteal-core); font-weight: 700; }
+.ampy-eljour__details[open] summary::before { content: "\2013"; }
+.ampy-eljour__details p { margin: var(--apspace-2xs) 0 0; line-height: 1.55; max-width: 70ch; }
+
+/* ===========================================================
+   Responsive — real breakpoints 992 / 768 / 480
+   =========================================================== */
+@media (max-width: 768px) {
+  .ampy-eljour { padding: var(--apspace-l) var(--apspace-s); }
+  .ampy-eljour__card { padding: var(--apspace-l); }
+  .ampy-eljour__reveal { padding: var(--apspace-m); min-height: 0; }
+  .ampy-eljour__card::before {
+    background: radial-gradient(80% 30% at 50% 0%, rgba(0, 169, 145, 0.30), transparent 72%);
+  }
+}
+@media (max-width: 480px) {
+  .ampy-eljour { padding: var(--apspace-m) var(--apspace-xs); }
+  .ampy-eljour__chip { width: 100%; justify-content: flex-start; }
+  .ampy-eljour__call { align-self: stretch; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ampy-eljour__card,
+  .ampy-eljour__slide,
+  .ampy-eljour__chip,
+  .ampy-eljour__call { transition: none; opacity: 1; transform: none; }
+}

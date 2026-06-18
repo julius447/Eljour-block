@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Eljour — "Något känns fel med elen?" symptom-block (Ampy)</title>
+<style>
+  /* ===========================================================
+     Ampy production tokens (1rem = 10px) — real ap* values.
+     Standalone prototype: production already defines these globally
+     (Bricks theme). Mirrored here so the preview is faithful.
+     Source values: foretagsdata §9.2/§9.4/§9.5; visste-du-att build.
+     =========================================================== */
+  html { font-size: 62.5%; }
+
+  :root {
+    /* brand triad + roles */
+    --apteal-core:      #00a991;
+    --apmidnight-blue:  #090b32;
+    --apemerald-flow:   #39c281;
+    --apneon-mint:      #55ff9a;
+    --apsky-mist:       #f5f9ff;
+    --appure-white:     #ffffff;
+    --apdarkest-black:  #1e1e1e;
+    --apcrystal-blue:   #b6f2ff;
+    --apseafoam-mint:   #5cc5b6;
+
+    /* fluid type scale (real clamps) */
+    --aptext-xs:   clamp(1rem, 0.21vw + 0.93rem, 1.2rem);
+    --aptext-s:    clamp(1.2rem, 0.20vw + 1.10rem, 1.4rem);
+    --aptext-m:    clamp(1.7rem, 0.10vw + 1.67rem, 1.8rem);
+    --aptext-l:    clamp(1.8rem, 1.04vw + 1.47rem, 2.8rem);
+    --aptext-xl:   clamp(2rem, 1.67vw + 1.47rem, 3.6rem);
+    --aptext-2xl:  clamp(2.2rem, 2.71vw + 1.33rem, 4.8rem);
+
+    /* fluid space scale (real min->max) */
+    --apspace-3xs: clamp(0.66rem, 0.05vw + 0.6rem, 0.7rem);
+    --apspace-2xs: clamp(0.82rem, 0.2vw + 0.7rem, 0.99rem);
+    --apspace-xs:  clamp(1.02rem, 0.4vw + 0.85rem, 1.4rem);
+    --apspace-s:   clamp(1.28rem, 0.7vw + 1rem, 1.98rem);
+    --apspace-m:   clamp(1.6rem, 1.2vw + 1.1rem, 2.8rem);
+    --apspace-l:   clamp(2rem, 1.8vw + 1.3rem, 3.96rem);
+    --apspace-xl:  clamp(2.5rem, 3.1vw + 1.4rem, 5.6rem);
+    --apspace-2xl: clamp(3.13rem, 4.8vw + 1.4rem, 7.92rem);
+
+    /* radius / shadow / motion */
+    --apradius-s:    clamp(0.6rem, 0.2vw + 0.5rem, 0.8rem);
+    --apradius-m:    clamp(1rem, 0.3vw + 0.85rem, 1.2rem);
+    --apradius-l:    clamp(1.6rem, 0.4vw + 1.4rem, 2rem);
+    --apradius-full: 999rem;
+    --card-shadow:   0 1.2rem 4rem rgba(9, 11, 50, 0.18);
+    --motion-normal: 0.28s;
+
+    --apmax-screen-width: 128rem;
+
+    font-family: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--apsky-mist);
+    color: var(--apdarkest-black);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===========================================================
+     ampy-eljour — symptom-chip -> risk-reveal block
+     Serious/akut register: midnight surface, teal action.
+     Severity colours are SCOPED to this device (never global
+     --state-* tokens) per foretagsdata §11.2 (the LED amber rule).
+     =========================================================== */
+  .ampy-eljour {
+    background: var(--apsky-mist);
+    padding: var(--apspace-xl) var(--apspace-l);
+  }
+
+  .ampy-eljour__card {
+    /* scoped severity palette — lives only inside this device */
+    --ej-sev-akut:  #ff6f61;  /* warm coral — genuinely acute only */
+    --ej-sev-snart: #ffc24b;  /* amber — call today */
+    --ej-sev-vanta: var(--apemerald-flow); /* calm — can usually wait */
+    --ej-hairline:  rgba(255, 255, 255, 0.14);
+    --ej-ink-soft:  rgba(255, 255, 255, 0.82);
+    --ej-ink-faint: rgba(255, 255, 255, 0.60);
+
+    position: relative;
+    overflow: hidden;
+    max-width: var(--apmax-screen-width);
+    margin-inline: auto;
+    background: var(--apmidnight-blue);
+    color: var(--appure-white);
+    border-radius: var(--apradius-l);
+    box-shadow: var(--card-shadow);
+    padding: var(--apspace-xl);
+
+    /* enter-view fade (runOnce, <=300ms) */
+    opacity: 0;
+    transform: translateY(1.4rem);
+    transition: opacity var(--motion-normal) ease, transform var(--motion-normal) ease;
+  }
+  .ampy-eljour__card.is-visible { opacity: 1; transform: none; }
+
+  /* brand-glow — surface treatment behind the header, NOT a second device */
+  .ampy-eljour__card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(46% 60% at 90% 6%, rgba(0, 169, 145, 0.34), transparent 70%),
+      radial-gradient(40% 48% at 98% 0%, rgba(85, 255, 154, 0.14), transparent 72%);
+  }
+  .ampy-eljour__head,
+  .ampy-eljour__chips,
+  .ampy-eljour__reveal,
+  .ampy-eljour__foot { position: relative; z-index: 1; }
+
+  /* ---- header / the hook ---- */
+  .ampy-eljour__head { display: flex; flex-direction: column; gap: var(--apspace-2xs); max-width: 62ch; }
+
+  .ampy-eljour__eyebrow {
+    display: inline-flex; align-items: center; gap: var(--apspace-2xs);
+    margin: 0;
+    font-size: var(--aptext-s);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--apteal-core);
+  }
+  .ampy-eljour__eyebrow svg { flex: none; width: 1.6rem; height: 1.6rem; }
+
+  .ampy-eljour__title {
+    margin: 0;
+    font-size: var(--aptext-2xl);
+    font-weight: 500;
+    line-height: 1.15;
+    color: var(--appure-white);
+    text-wrap: balance;
+  }
+
+  .ampy-eljour__sub {
+    margin: 0;
+    font-size: var(--aptext-m);
+    font-weight: 300;
+    line-height: 1.5;
+    color: var(--ej-ink-soft);
+  }
+  .ampy-eljour__sub b { font-weight: 600; color: var(--appure-white); }
+
+  /* ---- chip row (toggle directly — no wizard) ---- */
+  .ampy-eljour__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--apspace-2xs);
+    margin-top: var(--apspace-m);
+  }
+  .ampy-eljour__chip {
+    appearance: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: var(--aptext-s);
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--appure-white);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--ej-hairline);
+    border-radius: var(--apradius-full);
+    padding: 1.1rem 1.7rem;
+    min-height: 4.4rem; /* touch target */
+    display: inline-flex; align-items: center; gap: 0.8rem;
+    transition: background var(--motion-normal) ease, border-color var(--motion-normal) ease,
+                color var(--motion-normal) ease, transform var(--motion-normal) ease;
+  }
+  .ampy-eljour__chip::before {
+    content: ""; width: 0.7rem; height: 0.7rem; border-radius: 50%;
+    background: currentColor; opacity: 0.5; flex: none;
+  }
+  .ampy-eljour__chip:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255,255,255,0.28); }
+  .ampy-eljour__chip:focus-visible { outline: 2px solid var(--apneon-mint); outline-offset: 2px; }
+  .ampy-eljour__chip[aria-pressed="true"] {
+    background: var(--apteal-core);
+    border-color: var(--apteal-core);
+    color: var(--apmidnight-blue);
+    font-weight: 600;
+  }
+  .ampy-eljour__chip[aria-pressed="true"]::before { opacity: 1; background: var(--apmidnight-blue); }
+
+  /* ---- the risk reveal ---- */
+  .ampy-eljour__reveal {
+    margin-top: var(--apspace-m);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--ej-hairline);
+    border-radius: var(--apradius-m);
+    padding: var(--apspace-l);
+    min-height: 22rem; /* reserve space — no page jump on toggle */
+    transition: background var(--motion-normal) ease, border-color var(--motion-normal) ease;
+  }
+  /* Severity is read environmentally: a soft tint washes the whole panel in the
+     calibrated hue (akut/snart/vänta), reinforcing the labelled pill — NOT a lone
+     accent stripe. The colour carries meaning (the candour calibration), not decoration. */
+  .ampy-eljour__reveal[data-severity="akut"] {
+    background: linear-gradient(180deg, rgba(255, 111, 97, 0.11), rgba(255, 111, 97, 0.03));
+    border-color: rgba(255, 111, 97, 0.30);
+  }
+  .ampy-eljour__reveal[data-severity="snart"] {
+    background: linear-gradient(180deg, rgba(255, 194, 75, 0.10), rgba(255, 194, 75, 0.03));
+    border-color: rgba(255, 194, 75, 0.28);
+  }
+  .ampy-eljour__reveal[data-severity="vanta"] {
+    background: linear-gradient(180deg, rgba(57, 194, 129, 0.10), rgba(57, 194, 129, 0.03));
+    border-color: rgba(57, 194, 129, 0.26);
+  }
+
+  .ampy-eljour__slide { display: flex; flex-direction: column; gap: var(--apspace-s); }
+  .ampy-eljour__slide.is-swapping { opacity: 0; transform: translateY(0.6rem); }
+  .ampy-eljour__slide {
+    opacity: 1; transform: none;
+    transition: opacity var(--motion-normal) ease, transform var(--motion-normal) ease;
+  }
+
+  .ampy-eljour__sevrow { display: flex; align-items: center; gap: var(--apspace-s); flex-wrap: wrap; }
+  .ampy-eljour__sev {
+    display: inline-flex; align-items: center; gap: 0.7rem;
+    font-size: var(--aptext-xs);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.6rem 1.1rem;
+    border-radius: var(--apradius-full);
+  }
+  .ampy-eljour__sev::before { content: ""; width: 0.8rem; height: 0.8rem; border-radius: 50%; background: currentColor; }
+  .ampy-eljour__reveal[data-severity="akut"]  .ampy-eljour__sev { color: var(--ej-sev-akut);  background: rgba(255, 111, 97, 0.14); }
+  .ampy-eljour__reveal[data-severity="snart"] .ampy-eljour__sev { color: var(--ej-sev-snart); background: rgba(255, 194, 75, 0.14); }
+  .ampy-eljour__reveal[data-severity="vanta"] .ampy-eljour__sev { color: var(--ej-sev-vanta); background: rgba(57, 194, 129, 0.16); }
+
+  .ampy-eljour__seen { margin: 0; font-size: var(--aptext-l); font-weight: 500; line-height: 1.2; color: var(--appure-white); }
+
+  .ampy-eljour__block { display: flex; flex-direction: column; gap: 0.4rem; }
+  .ampy-eljour__label {
+    margin: 0; font-size: var(--aptext-xs); font-weight: 700; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--apteal-core);
+  }
+  .ampy-eljour__body { margin: 0; font-size: var(--aptext-m); font-weight: 300; line-height: 1.5; color: var(--ej-ink-soft); }
+  .ampy-eljour__body b { font-weight: 600; color: var(--appure-white); }
+
+  .ampy-eljour__action {
+    display: flex; gap: var(--apspace-xs); align-items: flex-start;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--apradius-s);
+    padding: var(--apspace-s);
+  }
+  .ampy-eljour__action svg { flex: none; width: 2rem; height: 2rem; color: var(--apteal-core); margin-top: 0.2rem; }
+  .ampy-eljour__action .ampy-eljour__body { color: var(--appure-white); }
+
+  /* the 112-first line — only on genuinely acute symptoms */
+  .ampy-eljour__emerg {
+    display: none;
+    align-items: center; gap: var(--apspace-xs);
+    font-size: var(--aptext-m); font-weight: 500; line-height: 1.4;
+    color: var(--appure-white);
+    background: rgba(255, 111, 97, 0.12);
+    border: 1px solid rgba(255, 111, 97, 0.45);
+    border-radius: var(--apradius-s);
+    padding: var(--apspace-s);
+  }
+  .ampy-eljour__reveal[data-emergency="true"] .ampy-eljour__emerg { display: flex; }
+  .ampy-eljour__emerg b { color: var(--ej-sev-akut); }
+  .ampy-eljour__emerg a { color: var(--appure-white); text-decoration: underline; text-underline-offset: 2px; }
+
+  /* ---- CTA: the conversion is the call ---- */
+  .ampy-eljour__cta { display: flex; flex-direction: column; gap: var(--apspace-2xs); margin-top: var(--apspace-2xs); }
+  .ampy-eljour__call {
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--apspace-xs);
+    align-self: flex-start;
+    font-family: inherit; font-size: var(--aptext-l); font-weight: 600; line-height: 1;
+    color: var(--apmidnight-blue);
+    background: var(--apteal-core);
+    border: none; border-radius: var(--apradius-full);
+    padding: 1.6rem 2.8rem; min-height: 5.4rem;
+    text-decoration: none; cursor: pointer;
+    transition: transform var(--motion-normal) ease, background var(--motion-normal) ease, box-shadow var(--motion-normal) ease;
+  }
+  .ampy-eljour__call svg { width: 2rem; height: 2rem; }
+  .ampy-eljour__call:hover { background: var(--apemerald-flow); transform: translateY(-1px); box-shadow: 0 0.8rem 2rem rgba(0,169,145,0.3); }
+  .ampy-eljour__call:focus-visible { outline: 2px solid var(--apneon-mint); outline-offset: 3px; }
+  @media (max-width: 480px) { .ampy-eljour__call { align-self: stretch; } }
+
+  .ampy-eljour__trust { margin: 0; font-size: var(--aptext-s); font-weight: 300; line-height: 1.45; color: var(--ej-ink-faint); }
+  .ampy-eljour__trust b { font-weight: 600; color: var(--ej-ink-soft); }
+
+  /* ---- footer: methodology / honesty ---- */
+  .ampy-eljour__foot { margin-top: var(--apspace-m); padding-top: var(--apspace-s); border-top: 1px solid var(--ej-hairline); }
+  .ampy-eljour__details { font-size: var(--aptext-s); color: var(--ej-ink-faint); }
+  .ampy-eljour__details summary {
+    cursor: pointer; font-weight: 600; color: var(--ej-ink-soft); list-style: none;
+    display: inline-flex; align-items: center; gap: 0.8rem; padding: 0.4rem 0;
+  }
+  .ampy-eljour__details summary::-webkit-details-marker { display: none; }
+  .ampy-eljour__details summary::before { content: "+"; color: var(--apteal-core); font-weight: 700; }
+  .ampy-eljour__details[open] summary::before { content: "–"; }
+  .ampy-eljour__details p { margin: var(--apspace-2xs) 0 0; line-height: 1.55; max-width: 70ch; }
+
+  /* ===========================================================
+     Responsive — real breakpoints 992 / 768 / 480
+     =========================================================== */
+  @media (max-width: 768px) {
+    .ampy-eljour { padding: var(--apspace-l) var(--apspace-s); }
+    .ampy-eljour__card { padding: var(--apspace-l); }
+    .ampy-eljour__reveal { padding: var(--apspace-m); min-height: 0; }
+    .ampy-eljour__card::before {
+      background: radial-gradient(80% 30% at 50% 0%, rgba(0,169,145,0.30), transparent 72%);
+    }
+  }
+  @media (max-width: 480px) {
+    .ampy-eljour { padding: var(--apspace-m) var(--apspace-xs); }
+    .ampy-eljour__chip { width: 100%; justify-content: flex-start; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ampy-eljour__card,
+    .ampy-eljour__slide,
+    .ampy-eljour__chip,
+    .ampy-eljour__call { transition: none; opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ============================================================
+       The block. In production the symptom data + strings are
+       editor-driven (ACF/Bricks); here they live in the inline
+       SYMPTOMS array so the prototype is self-contained and the
+       layout reads true. Every fact carries its src in the precedent
+       doc: research/builds/eljour-symptom-block-v1.md
+       ============================================================ -->
+  <section class="ampy-eljour" aria-labelledby="ejTitle">
+    <div class="ampy-eljour__card" id="ejCard">
+
+      <header class="ampy-eljour__head">
+        <p class="ampy-eljour__eyebrow">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 2 4 13.2h6.1L9.4 22 20 10.2h-6.4z"/></svg>
+          Eljour · dygnet runt
+        </p>
+        <h2 class="ampy-eljour__title" id="ejTitle">Något med elen känns fel? Tryck på det du märker.</h2>
+        <p class="ampy-eljour__sub">
+          Vi matchar det du ser med vad det faktiskt kan betyda, ärligt.
+          <b>Allt är inte en nödsituation, men en del är.</b> Ser du lågor eller rök: ring 112 först.
+        </p>
+      </header>
+
+      <!-- toggle directly between symptoms — no wizard -->
+      <div class="ampy-eljour__chips" role="group" aria-label="Vanliga tecken på elfel" id="ejChips"></div>
+
+      <!-- the risk reveal; aria-live so the swap is announced -->
+      <div class="ampy-eljour__reveal" id="ejReveal" data-severity="" data-emergency="false" aria-live="polite">
+        <div class="ampy-eljour__slide" id="ejSlide"></div>
+      </div>
+
+      <div class="ampy-eljour__foot">
+        <details class="ampy-eljour__details">
+          <summary>Så bedömer vi det här</summary>
+          <p>
+            Det här är vägledning, inte en besiktning på plats. Vi listar det vanligaste, din situation
+            kan vara en annan. Vi kalibrerar allvaret ärligt: allt är inte akut. Tecknen bygger på våra egna
+            utryckningar och Elsäkerhetsverket, som registrerade 45 bostadsbränder med elcentralen som
+            startobjekt under 2023. Vid lågor eller rök: ring 112 före oss. Det är aldrig fel.
+          </p>
+        </details>
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+    // ---- DATA layer (pure): the six symptoms -> honest, calibrated risk ----
+    // severity: 'akut' (genuinely acute) | 'snart' (call today) | 'vanta' (often can wait)
+    // emergency112: true only where flames/smoke are a live possibility.
+    var SYMPTOMS = [
+      {
+        id: "sakring",
+        chip: "Säkringarna löser ut",
+        severity: "snart", sevLabel: "Ring oss idag",
+        seen: "En säkring eller jordfelsbrytare som löser ut",
+        means: "Löser den ut en enstaka gång är det oftast överbelastning, för mycket på samma grupp. Men löser den ut direkt, eller gång på gång, kan det vara en kortslutning eller ett jordfel i en fast installation.",
+        danger: "Att tvinga tillbaka en säkring som löser om och om igen kan dölja ett fel som värmer en kabel du inte ser.",
+        action: "Två återställningar är taket. Löser den ut en tredje gång, lämna den avslagen och ring oss.",
+        emergency112: false
+      },
+      {
+        id: "branlukt",
+        chip: "Det luktar bränt",
+        severity: "akut", sevLabel: "Akut: agera nu",
+        seen: "Brännlukt eller lukt av smält plast",
+        means: "Lukt av het eller smält plast vid elcentral eller uttag betyder nästan alltid en glappkontakt som hettats upp. Plasten kan redan vara på väg mot sin tändpunkt.",
+        danger: "Det här är ett av få tecken som alltid bör kontrolleras av en elektriker, oavsett vad annat verkar normalt.",
+        action: "Slå av huvudbrytaren. Rör inte centralen mer än så.",
+        emergency112: true
+      },
+      {
+        id: "stromlost",
+        chip: "Strömmen är borta",
+        severity: "vanta", sevLabel: "Kolla först: ofta ofarligt",
+        seen: "Strömmen är helt borta",
+        means: "Är det mörkt hos grannarna också är det elnätet. Då är felet inte ditt, och inte farligt. Är det bara hos dig kan en huvudsäkring eller jordfelsbrytare ha löst ut, eller så är det ett fel i din egen anläggning.",
+        danger: "Går strömmen samtidigt som det luktar bränt eller låter konstigt är det inte ett vanligt avbrott. Då behandlar du det som akut.",
+        action: "Kolla om grannarna har ström. Prova att återställa jordfelsbrytaren en gång. Löser det sig inte, ring oss.",
+        emergency112: false
+      },
+      {
+        id: "varmt-uttag",
+        chip: "Uttaget är varmt",
+        severity: "snart", sevLabel: "Ring oss idag",
+        seen: "Ett uttag som känns varmt",
+        means: "Ett uttag ska aldrig vara varmt när inget drar mycket ström. Värme betyder oftast en glappkontakt eller en överbelastad punkt. Kontaktmotstånd som bygger värme bakom väggen.",
+        danger: "Ytorna i en elcentral bör aldrig passera 78 grader. Ett varmt uttag är samma sak en bit ut i väggen. Det kan vara på väg mot samma punkt.",
+        action: "Dra ur det som sitter i och använd inte uttaget. Är det missfärgat eller luktar, slå av gruppen direkt och ring oss.",
+        emergency112: false
+      },
+      {
+        id: "flimmer",
+        chip: "Lamporna flimrar",
+        severity: "snart", sevLabel: "Ring oss idag",
+        seen: "Ljus som flimrar eller dippar",
+        means: "Flimrar ljuset när spisen, tvättmaskinen eller värmepumpen drar igång kan det vara en lös huvudanslutning eller ett glapp i nollskenan.",
+        danger: "40 procent av alla surrande centraler vi rycker ut på har glapp i noll- eller fasskena. Ett nollfel kan skicka överspänning rakt in i din elektronik.",
+        action: "Notera vid vilken apparat det flimrar. Det hjälper oss hitta felet snabbt. Ring oss så tittar vi på det.",
+        emergency112: false
+      },
+      {
+        id: "gnistor",
+        chip: "Det gnistrar eller smäller",
+        severity: "akut", sevLabel: "Akut: agera nu",
+        seen: "Gnistor, ett smäll eller ett sprakande ljud",
+        means: "Gnistor, ett smäll eller ett sprakande ljud i el är en ljusbåge. Den kan bli tusentals grader het på ett ögonblick och smälta metall och plast.",
+        danger: "En ljusbåge kan starta en brand. Det här väntar man inte ut.",
+        action: "Slå av huvudbrytaren direkt.",
+        emergency112: true
+      }
+    ];
+
+    var PHONE_DISPLAY = "010-265 79 79";
+    var PHONE_TEL = "+46102657979";
+
+    (function () {
+      var card    = document.getElementById('ejCard');
+      var chipsEl = document.getElementById('ejChips');
+      var reveal  = document.getElementById('ejReveal');
+      var slide   = document.getElementById('ejSlide');
+      var reduce  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var current = null;
+      var swapTimer = null;
+
+      // ---- enter-view fade (runOnce) ----
+      if (reduce || !('IntersectionObserver' in window)) {
+        card.classList.add('is-visible');
+      } else {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { if (e.isIntersecting) { card.classList.add('is-visible'); io.disconnect(); } });
+        }, { threshold: 0.2 });
+        io.observe(card);
+      }
+
+      // ---- tiny analytics shim (consent-gated in production) ----
+      function track(event, detail) {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push(Object.assign({ event: 'ampy_ej_' + event }, detail || {}));
+      }
+
+      // ---- render the chip row ----
+      SYMPTOMS.forEach(function (s, i) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'ampy-eljour__chip';
+        b.id = 'ejChip-' + s.id;
+        b.setAttribute('aria-pressed', 'false');
+        b.setAttribute('aria-controls', 'ejReveal');
+        b.textContent = s.chip;
+        b.addEventListener('click', function () { select(s.id); });
+        b.addEventListener('keydown', function (e) { arrow(e, i); });
+        chipsEl.appendChild(b);
+      });
+
+      // ---- empty state (warm, grounded — relief not warning) ----
+      function renderEmpty() {
+        reveal.setAttribute('data-severity', '');
+        reveal.setAttribute('data-emergency', 'false');
+        slide.innerHTML =
+          '<p class="ampy-eljour__seen">En elcentral varnar nästan alltid innan något allvarligt händer.</p>' +
+          '<p class="ampy-eljour__body">Tryck på det du märker ovan, så säger vi vad det kan betyda och ' +
+          'vad du gör nu. Är du osäker på säkerheten, vänta aldrig: ring oss.</p>' +
+          callBlock(false);
+      }
+
+      function callBlock(isEmergency) {
+        var emerg = isEmergency
+          ? '<p class="ampy-eljour__emerg"><span><b>Ser du lågor eller rök?</b> Ring <a href="tel:112">112</a> först. Sedan oss.</span></p>'
+          : '';
+        return emerg +
+          '<div class="ampy-eljour__cta">' +
+            '<a class="ampy-eljour__call" href="tel:' + PHONE_TEL + '" data-ej-call>' +
+              '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15.5 15.5 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.2.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.3 1z"/></svg>' +
+              'Ring ' + PHONE_DISPLAY +
+            '</a>' +
+            '<p class="ampy-eljour__trust">Jour dygnet runt, året om. Vi har som mål att en jourmontör är ' +
+            'på plats <b>inom en timme</b>. Inställelseavgift plus timtaxa, sagt innan vi åker. Inga dolda avgifter.</p>' +
+          '</div>';
+      }
+
+      // ---- render one symptom's risk slide ----
+      function renderSlide(s) {
+        reveal.setAttribute('data-severity', s.severity);
+        reveal.setAttribute('data-emergency', s.emergency112 ? 'true' : 'false');
+        slide.innerHTML =
+          '<div class="ampy-eljour__sevrow">' +
+            '<span class="ampy-eljour__sev">' + s.sevLabel + '</span>' +
+            '<p class="ampy-eljour__seen">' + s.seen + '</p>' +
+          '</div>' +
+          '<div class="ampy-eljour__block">' +
+            '<p class="ampy-eljour__label">Vad det kan betyda</p>' +
+            '<p class="ampy-eljour__body">' + s.means + '</p>' +
+          '</div>' +
+          '<div class="ampy-eljour__block">' +
+            '<p class="ampy-eljour__label">Faran du kanske inte tänkt på</p>' +
+            '<p class="ampy-eljour__body">' + s.danger + '</p>' +
+          '</div>' +
+          '<div class="ampy-eljour__action">' +
+            '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2 2 22h20L12 2zm0 6 6.5 12h-13L12 8zm-1 4v4h2v-4h-2zm0 6v2h2v-2h-2z"/></svg>' +
+            '<div><p class="ampy-eljour__label" style="color:var(--appure-white)">Gör så här nu</p>' +
+            '<p class="ampy-eljour__body">' + s.action + '</p></div>' +
+          '</div>' +
+          callBlock(s.emergency112);
+      }
+
+      // ---- selection (toggle directly, single-select, no wizard) ----
+      function select(id) {
+        var s = SYMPTOMS.filter(function (x) { return x.id === id; })[0];
+        if (!s) return;
+        Array.prototype.forEach.call(chipsEl.children, function (c) {
+          c.setAttribute('aria-pressed', c.id === 'ejChip-' + id ? 'true' : 'false');
+        });
+        current = id;
+        swap(function () { renderSlide(s); });
+        track('symptom_select', { symptom: id, severity: s.severity });
+      }
+
+      // ---- swap with a short fade, reduced-motion aware ----
+      // cancel any pending swap so only the latest selection paints (no stale-state flash)
+      function swap(paint) {
+        if (reduce) { paint(); return; }
+        if (swapTimer) window.clearTimeout(swapTimer);
+        slide.classList.add('is-swapping');
+        swapTimer = window.setTimeout(function () {
+          paint(); slide.classList.remove('is-swapping'); swapTimer = null;
+        }, 140);
+      }
+
+      // ---- keyboard arrow nav across chips ----
+      function arrow(e, i) {
+        var k = e.key, n = SYMPTOMS.length, j = null;
+        if (k === 'ArrowRight' || k === 'ArrowDown') j = (i + 1) % n;
+        else if (k === 'ArrowLeft' || k === 'ArrowUp') j = (i - 1 + n) % n;
+        if (j === null) return;
+        e.preventDefault();
+        chipsEl.children[j].focus();
+      }
+
+      // delegate call-click tracking
+      reveal.addEventListener('click', function (e) {
+        if (e.target.closest('[data-ej-call]')) track('cta_call_click', { symptom: current });
+        if (e.target.closest('a[href="tel:112"]')) track('cta_112_click', { symptom: current });
+      });
+
+      renderEmpty();
+      track('view', {});
+    })();
+  </script>
+
+</body>
+</html>

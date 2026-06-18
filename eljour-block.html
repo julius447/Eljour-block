@@ -1,0 +1,48 @@
+<!-- =====================================================================
+     Ampy — Eljour symptom-block: the static SHELL only.
+     The chip row and the reveal are rendered by eljour-block.js into the
+     empty containers below. Paste this markup into a Bricks Code element
+     (HTML), load eljour-block.css (Settings > Custom CSS or the section's
+     custom CSS), and eljour-block.js (the Code element's JS or enqueued).
+
+     Place HIGH on every eljour landing page — first thing a worried person
+     meets when they scroll. Copy is editor-overridable (ACF) in production;
+     the strings here are the on-voice defaults.
+     ===================================================================== -->
+<section class="ampy-eljour" aria-labelledby="ejTitle">
+  <div class="ampy-eljour__card">
+
+    <header class="ampy-eljour__head">
+      <p class="ampy-eljour__eyebrow">
+        <!-- solid bolt glyph — the sanctioned brand motif (foretagsdata §9.6) -->
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 2 4 13.2h6.1L9.4 22 20 10.2h-6.4z"/></svg>
+        Eljour · dygnet runt
+      </p>
+      <h2 class="ampy-eljour__title" id="ejTitle">Något med elen känns fel? Tryck på det du märker.</h2>
+      <p class="ampy-eljour__sub">
+        Vi matchar det du ser med vad det faktiskt kan betyda, ärligt.
+        <b>Allt är inte en nödsituation, men en del är.</b> Ser du lågor eller rök: ring 112 först.
+      </p>
+    </header>
+
+    <!-- chip row + reveal are filled by eljour-block.js -->
+    <div class="ampy-eljour__chips" role="group" aria-label="Vanliga tecken på elfel"></div>
+
+    <div class="ampy-eljour__reveal" id="ejReveal" data-severity="" data-emergency="false" aria-live="polite">
+      <div class="ampy-eljour__slide"></div>
+    </div>
+
+    <div class="ampy-eljour__foot">
+      <details class="ampy-eljour__details">
+        <summary>Så bedömer vi det här</summary>
+        <p>
+          Det här är vägledning, inte en besiktning på plats. Vi listar det vanligaste, din situation
+          kan vara en annan. Vi kalibrerar allvaret ärligt: allt är inte akut. Tecknen bygger på våra egna
+          utryckningar och Elsäkerhetsverket, som registrerade 45 bostadsbränder med elcentralen som
+          startobjekt under 2023. Vid lågor eller rök: ring 112 före oss. Det är aldrig fel.
+        </p>
+      </details>
+    </div>
+
+  </div>
+</section>
