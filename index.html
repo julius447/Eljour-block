@@ -7,12 +7,13 @@
 <style>
   html { font-size: 62.5%; }
   :root {
-    --bg:#f5f9ff; --surface:#ffffff; --ink:#090b32; --ink-body:#3b3f59; --ink-soft:#6b708c;
+    --bg:#f5f9ff; --surface:#ffffff; --ink:#090b32; --ink-body:#3b3f59; --ink-soft:#5f6480;
     --teal:#00a991; --teal-dark:#0a8f7c; --teal-pill:#0a6e58; --teal-tint:#e3f6f1; --line:#e6ecf6;
     --akut-bg:#fdeceb; --akut-ink:#b3261e; --akut-dot:#e24b4a; --akut-line:#f0b9b3;
-    --ring-bg:#fff4e0; --ring-ink:#8a5800; --ring-dot:#e3a008;
-    --cta-grad:linear-gradient(152deg,#dbf5fb 0%,#aee4f1 54%,#8ed4e8 100%);
-    --cta-ink:#0e2138; --cta-border:rgba(255,255,255,.72); --cta-shadow:0 1rem 2.6rem rgba(36,118,148,.20);
+    --varn-bg:#fff4e0; --varn-ink:#8a5800; --varn-dot:#e3a008;
+    /* global call CTA — premium deep-green gradient, white text holds WCAG AA across every stop */
+    --cta-grad:linear-gradient(146deg,#055a4b 0%,#08735f 52%,#0a8169 100%);
+    --cta-ink:#ffffff; --cta-shadow:0 1rem 2.4rem rgba(4,110,90,.32);
     --r:1.4rem; --r-l:2rem; --r-s:1rem; --m:.3s;
     --eb-max:128rem;            /* match site/Hero-2 container (1280px) */
     --shadow-card:0 1rem 3rem rgba(9,11,50,.07);
@@ -29,14 +30,15 @@
   .eb__title{ margin:0; color:var(--ink); font-size:clamp(2.8rem,3.8vw,4rem); font-weight:500;
     line-height:1.1; letter-spacing:-0.015em; text-wrap:balance; }
 
-  /* ---- global blue call CTA (Ampy unified) ---- */
+  /* ---- global green call CTA ---- */
   .eb__cta{ display:flex; align-items:center; justify-content:space-between; gap:1.4rem; width:100%;
     padding:1.5rem 2rem; min-height:5.8rem; border-radius:var(--r); background:var(--cta-grad);
-    border:1px solid var(--cta-border); box-shadow:var(--cta-shadow), inset 0 1px 0 rgba(255,255,255,.6);
+    border:1px solid rgba(255,255,255,.12); box-shadow:var(--cta-shadow), inset 0 1px 0 rgba(255,255,255,.22);
     color:var(--cta-ink); font-size:clamp(1.5rem,1.4vw,1.75rem); font-weight:600; text-decoration:none;
     line-height:1.1; transition:transform var(--m) ease, box-shadow var(--m) ease; }
-  .eb__cta:hover{ transform:translateY(-1px); box-shadow:0 1.4rem 3.2rem rgba(36,118,148,.28), inset 0 1px 0 rgba(255,255,255,.6); }
-  .eb__cta:focus-visible{ outline:2px solid var(--cta-ink); outline-offset:3px; }
+  .eb__cta:hover{ transform:translateY(-1px);
+    box-shadow:0 1.4rem 3.2rem rgba(4,110,90,.40), inset 0 1px 0 rgba(255,255,255,.22); }
+  .eb__cta:focus-visible{ outline:2px solid var(--ink); outline-offset:3px; }
   .eb__cta-txt{ display:inline-flex; align-items:baseline; gap:.6rem; white-space:nowrap; min-width:0; }
   .eb__cta-txt b{ font-weight:600; }
   .eb__cta svg{ flex:none; width:2.4rem; height:2.4rem; }
@@ -54,12 +56,12 @@
   .eb__status .pulse{ width:.9rem; height:.9rem; border-radius:50%; background:var(--teal); position:relative; }
   .eb__status .pulse::after{ content:""; position:absolute; inset:0; border-radius:50%; background:var(--teal);
     animation:eb-pulse 2s ease-out infinite; }
-  @keyframes eb-pulse{ 0%{ transform:scale(1); opacity:.6 } 100%{ transform:scale(2.6); opacity:0 } }
+  @keyframes eb-pulse{ 0%{ transform:scale(1); opacity:.55 } 100%{ transform:scale(2); opacity:0 } }
   .eb__call-lead{ margin:0; font-size:1.55rem; line-height:1.5; color:var(--ink-body); }
   .eb__call-lead b{ color:var(--ink); font-weight:600; }
 
-  .eb__trust{ list-style:none; margin:0; padding:1.8rem 0 0; border-top:1px solid var(--line);
-    display:flex; flex-direction:column; gap:1.6rem; }
+  .eb__trust{ list-style:none; margin:0; padding:1.8rem 0; border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line); display:flex; flex-direction:column; gap:1.6rem; }
   .eb__trust li{ display:grid; grid-template-columns:2.6rem 1fr; column-gap:1.3rem; align-items:start;
     font-size:1.5rem; line-height:1.4; color:var(--ink-body); }
   .eb__trust-ic{ width:2.6rem; height:2.2rem; display:flex; align-items:center; justify-content:center; color:var(--teal); }
@@ -73,7 +75,7 @@
   /* ---- accordion ---- */
   .eb__list{ list-style:none; margin:0; padding:0; background:var(--surface); border:1px solid var(--line);
     border-radius:var(--r-l); box-shadow:var(--shadow-card); overflow:hidden; }
-  .eb__item + .eb__item{ border-top:1px solid var(--line); }
+  .eb__item + .eb__item, .eb__more-li{ border-top:1px solid var(--line); }
   .eb__row{ appearance:none; width:100%; cursor:pointer; background:transparent; border:0; text-align:left;
     display:flex; align-items:center; gap:1.3rem; padding:clamp(1.8rem,2vw,2.2rem) clamp(1.8rem,2.4vw,2.6rem);
     font-family:inherit; color:var(--ink); font-size:clamp(1.7rem,1.9vw,1.9rem); font-weight:500;
@@ -87,7 +89,7 @@
   .eb__chev{ flex:none; width:2.2rem; height:2.2rem; color:var(--ink-soft); transition:transform var(--m) ease; }
   .eb__row[aria-expanded="true"] .eb__chev{ transform:rotate(180deg); }
   .d-akut{ background:var(--akut-dot); } .t-akut{ background:var(--akut-bg); color:var(--akut-ink); }
-  .d-ring{ background:var(--ring-dot); } .t-ring{ background:var(--ring-bg); color:var(--ring-ink); }
+  .d-varn{ background:var(--varn-dot); } .t-varn{ background:var(--varn-bg); color:var(--varn-ink); }
 
   .eb__panel{ display:grid; grid-template-rows:0fr; transition:grid-template-rows var(--m) ease; }
   .eb__row[aria-expanded="true"] + .eb__panel{ grid-template-rows:1fr; }
@@ -101,31 +103,39 @@
     border-radius:var(--r-s); padding:1.2rem 1.4rem; max-width:62ch; }
   .eb__safety svg{ flex:none; width:2rem; height:2rem; margin-top:.1rem; }
   .eb__safety a{ color:var(--akut-ink); font-weight:600; text-decoration:underline; text-underline-offset:2px; }
-  .eb__act{ margin-top:.2rem; display:flex; flex-direction:column; gap:1rem; }
-  .eb__act .eb__cta,.eb__112{ max-width:42rem; }
-  /* dedicated 112 control — life-safety primary on fire symptoms */
-  .eb__112{ display:flex; align-items:center; justify-content:center; gap:.9rem; width:100%;
-    min-height:5.2rem; padding:1.4rem 2rem; border-radius:var(--r); background:var(--akut-bg);
-    border:1.5px solid var(--akut-line); color:var(--akut-ink); font-size:1.6rem; font-weight:600;
-    text-decoration:none; transition:background var(--m) ease; }
-  .eb__112:hover{ background:#fbe0dd; }
-  .eb__112:focus-visible{ outline:2px solid var(--akut-ink); outline-offset:3px; }
-  .eb__112 svg{ width:2rem; height:2rem; }
+  .eb__safety a:focus-visible{ outline:2px solid var(--akut-ink); outline-offset:2px; border-radius:2px; }
+  .eb__act{ margin-top:.2rem; }
+  .eb__act .eb__cta{ max-width:34rem; }
+
+  /* ---- "se fler" (desktop length control) ---- */
+  .eb__item--more{ display:none; }
+  .eb__list.is-open .eb__item--more{ display:block; }
+  .eb__more{ appearance:none; width:100%; cursor:pointer; background:transparent; border:0; font-family:inherit;
+    display:flex; align-items:center; justify-content:center; gap:.8rem; padding:1.8rem 1.6rem;
+    font-size:1.5rem; font-weight:600; color:var(--teal-pill); transition:background var(--m) ease; }
+  .eb__more:hover{ background:#fafcff; }
+  .eb__more:focus-visible{ outline:2px solid var(--teal); outline-offset:-2px; }
+  .eb__more svg{ width:1.8rem; height:1.8rem; transition:transform var(--m) ease; }
+  .eb__list.is-open .eb__more svg{ transform:rotate(180deg); }
 
   /* ---- responsive (992 / 768 / 480) ---- */
   @media (max-width:992px){
     .eb__grid{ display:block; }
+    .eb__head{ text-align:center; max-width:none; margin-bottom:2.4rem; }
+    .eb__head .eb__title{ margin-inline:auto; max-width:18ch; }
     .eb__list{ margin:2rem 0; }
     .eb__ground--d{ display:none; }
     .eb__ground--m{ display:block; }
-    .eb__act .eb__cta,.eb__112{ max-width:none; }
+    .eb__act .eb__cta{ max-width:none; }
+    .eb__item--more{ display:block; }
+    .eb__more-li{ display:none; }
   }
   @media (max-width:480px){
     .eb__cta{ font-size:1.5rem; padding:1.4rem 1.6rem; }
     .eb__cta svg{ width:2.2rem; height:2.2rem; }
   }
   @media (prefers-reduced-motion:reduce){
-    .eb__panel,.eb__chev,.eb__cta,.eb__112{ transition:none; }
+    .eb__panel,.eb__chev,.eb__cta,.eb__more svg{ transition:none; }
     .eb__status .pulse::after{ animation:none; }
   }
 </style>
@@ -141,17 +151,17 @@
         <aside class="eb__aside">
           <div class="eb__call">
             <span class="eb__status"><span class="pulse"></span> Jour öppen just nu</span>
-            <p class="eb__call-lead"><b>Akut elfel? Ring oss direkt.</b> En av Ampys behöriga elektriker kan vara hos dig inom en timme.</p>
+            <p class="eb__call-lead"><b>Akut elfel? Ring oss direkt.</b> Då slipper du felsöka själv, och vi ser till att det blir säkert igen.</p>
+            <ul class="eb__trust">
+              <li><span class="eb__trust-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.4V12l3 1.8" stroke-linecap="round"/></svg></span> Jour dygnet runt, året om.</li>
+              <li><span class="eb__trust-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 13.5l3-2.2" stroke-linecap="round"/><path d="M9.5 2.5h5M12 2.5V5.4" stroke-linecap="round"/></svg></span> Målsättning att vara på plats inom en timme.</li>
+              <li><span class="eb__trust-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Prata med en av våra behöriga elektriker, inte en växel.</li>
+              <li><span class="eb__trust-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3.6 12.4l8-8a2 2 0 0 1 1.4-.6H19a1.5 1.5 0 0 1 1.5 1.5v6a2 2 0 0 1-.6 1.4l-8 8a1.5 1.5 0 0 1-2.1 0l-6.6-6.6a1.5 1.5 0 0 1 0-2.1z" stroke-linejoin="round"/><circle cx="15.8" cy="8.2" r="1.3"/></svg></span> Tydligt pris innan vi rycker ut, inga dolda avgifter.</li>
+            </ul>
             <a class="eb__cta" href="tel:+46102657979" data-call="aside">
               <span class="eb__cta-txt">Ring eljouren <b>010-265 79 79</b></span>
               <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.5 15.5 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.2.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.3 1z"/><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M15.8 2.6a6.4 6.4 0 0 1 5.6 5.6M15.2 6.1a3 3 0 0 1 2.7 2.7"/></svg>
             </a>
-            <ul class="eb__trust">
-              <li><span class="eb__trust-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.4V12l3 1.8" stroke-linecap="round"/></svg></span> Jour dygnet runt, året om.</li>
-              <li><span class="eb__trust-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 13.5l3-2.2" stroke-linecap="round"/><path d="M9.5 2.5h5M12 2.5V5.4" stroke-linecap="round"/></svg></span> Målsättning att vara på plats inom en timme.</li>
-              <li><span class="eb__trust-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Prata med vår behöriga elektriker, inte en växel.</li>
-              <li><span class="eb__trust-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3.6 12.4l8-8a2 2 0 0 1 1.4-.6H19a1.5 1.5 0 0 1 1.5 1.5v6a2 2 0 0 1-.6 1.4l-8 8a1.5 1.5 0 0 1-2.1 0l-6.6-6.6a1.5 1.5 0 0 1 0-2.1z" stroke-linejoin="round"/><circle cx="15.8" cy="8.2" r="1.3"/></svg></span> Tydligt pris innan vi rycker ut, inga dolda avgifter.</li>
-            </ul>
           </div>
           <p class="eb__ground eb__ground--d">Varje år rycker räddningstjänsten ut till omkring <b>1 800 elrelaterade bränder</b> i svenska bostäder. De flesta börjar med en glappkontakt som hettas upp. Källa: Elsäkerhetsverket.</p>
         </aside>
@@ -164,53 +174,57 @@
   </section>
 
   <script>
-    var PHONE_DISPLAY="010-265 79 79", PHONE_TEL="+46102657979";
+    var PHONE_DISPLAY="010-265 79 79", PHONE_TEL="+46102657979", VISIBLE=8;
     var CTA_ICON='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.5 15.5 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.2.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.3 1z"/><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M15.8 2.6a6.4 6.4 0 0 1 5.6 5.6M15.2 6.1a3 3 0 0 1 2.7 2.7"/></svg>';
-    var PHONE_PLAIN='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15.5 15.5 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.2.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.3 1z"/></svg>';
     var CHEV='<svg class="eb__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
     var FIRE='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c1 3-1 5-2 6-1.4 1.4-3 3-3 5.5A5.5 5.5 0 0 0 17.5 13c0-2-1-3.5-2-4.5.2 1.2-.3 2.2-1 2.6.6-3-1.5-6-2.5-9.1z"/></svg>';
-    // ordered by how often people actually call eljour (most common first).
-    // sev: akut | ring · act112: show a dedicated "Ring 112 först" control (active-fire symptoms)
+    // visible 8 keep every 112/1177-carrying symptom on screen (safety > frequency for default visibility);
+    // the 4 under "Se fler" carry only generic/no emergency-number guidance. sev: akut | varn
     var SYMPTOMS=[
-      {id:"stromavbrott",label:"Strömavbrott",sev:"ring",act112:false,
-        risk:"Är det mörkt hos grannarna också är det <b>elnätet</b>, inte ditt fel. Är det bara hos dig är det ett fel i din anläggning, och det löser sig sällan av sig självt.",safety:""},
-      {id:"sakring",label:"Säkring eller jordfelsbrytare löser ut",sev:"ring",act112:false,
-        risk:"En enstaka gång är oftast bara överlast. Men löser den ut <b>gång på gång</b> är det ofta ett jord- eller isolationsfel, ibland fukt i elen, och då finns en brandrisk. Tvinga inte tillbaka den om och om igen.",safety:""},
-      {id:"flimmer",label:"Flimrande ljus",sev:"ring",act112:false,
-        risk:"Flimrar flera lampor samtidigt, eller en kraftigt, är det oftast ett fel i den fasta installationen, ett glapp eller en lös nollanslutning. Ett <b>nollfel</b> kan skicka överspänning rakt in i din elektronik.",safety:""},
-      {id:"branlukt",label:"Brännlukt eller rök",sev:"akut",act112:true,
+      {id:"stromavbrott",label:"Strömavbrott",sev:"varn",
+        risk:"Är det mörkt hos grannarna också är det <b>elnätet</b>, inte ditt fel. Är det bara hos dig är det ett fel i din anläggning som behöver felsökas.",safety:""},
+      {id:"sakring",label:"Säkring eller jordfelsbrytare löser ut",sev:"varn",
+        risk:"En enstaka gång är oftast bara överlast. Men löser den ut <b>gång på gång</b> är det ofta ett jord- eller isolationsfel, ibland fukt som trängt in i installationen, och då finns en brandrisk. Tvinga inte tillbaka den om och om igen.",safety:""},
+      {id:"branlukt",label:"Brännlukt eller rök",sev:"akut",
         risk:"Brännlukt eller lukt av smält plast betyder att det <b>redan blivit hett</b> någonstans i elen. Värmen kan sitta dold bakom en vägg, och det är så elbränder börjar.",
-        safety:"Slå av huvudbrytaren. Ser du rök eller lågor, gå ut direkt."},
-      {id:"varmt-uttag",label:"Varmt eller missfärgat uttag",sev:"akut",act112:false,
-        risk:"Ett uttag ska aldrig vara varmt. Värme, missfärgning eller svarta märken är en <b>glappkontakt</b> som byggt hetta, ofta dolt inne i väggen. Glappkontakt är den vanligaste orsaken till elbrand.",
+        safety:"Slå av huvudbrytaren. Ser du rök eller lågor, gå ut direkt och ring <a href=\"tel:112\">112</a>."},
+      {id:"flimmer",label:"Flimrande ljus",sev:"varn",
+        risk:"Flimrar flera lampor samtidigt, eller en kraftigt, är det oftast ett fel i den fasta installationen, ett glapp eller en lös nollanslutning. Ett <b>nollfel</b> kan skicka överspänning rakt in i din elektronik.",safety:""},
+      {id:"varmt-uttag",label:"Varmt eller missfärgat uttag",sev:"akut",
+        risk:"Ett uttag ska aldrig vara varmt. Värme, missfärgning eller svarta märken är en <b>glappkontakt</b> som byggt hetta, ofta dolt inne i väggen.",
         safety:"Dra ur det som sitter i och använd inte uttaget."},
-      {id:"surr",label:"Det surrar eller knäpper i elcentralen",sev:"ring",act112:false,
-        risk:"Ett surrande eller knäppande ljud från centralen eller ett uttag är ofta en <b>glappkontakt</b>, en lös skruv som sakta hettas upp. Det är samma fel som ligger bakom de flesta elbränder.",safety:""},
-      {id:"gnistor",label:"Gnistor eller smäll",sev:"akut",act112:true,
+      {id:"gnistor",label:"Gnistor eller smäll",sev:"akut",
         risk:"Gnistor, en smäll eller ett sprakande ljud är en <b>ljusbåge</b>. Den blir tusentals grader på ett ögonblick och kan tända det som finns runt omkring.",
-        safety:"Slå av huvudbrytaren. Ser du rök eller lågor, gå ut direkt."},
-      {id:"vitvara",label:"En maskin ryker eller luktar bränt",sev:"akut",act112:true,
-        risk:"Rök eller brännlukt från en tvättmaskin, diskmaskin eller torktumlare kan vara ett skadat värmeelement eller en kortslutning som tänder plasten. Vitvaror är en <b>vanlig brandkälla</b>.",
-        safety:"Dra ur maskinen och slå av dess säkring. Ser du rök eller lågor, gå ut direkt."},
-      {id:"elstot",label:"Elstöt",sev:"akut",act112:false,
+        safety:"Slå av huvudbrytaren. Ser du rök eller lågor, gå ut direkt och ring <a href=\"tel:112\">112</a>."},
+      {id:"elstot",label:"Elstöt",sev:"akut",
         risk:"Att känna ström i en apparat, ett uttag eller en kran är ett <b>jordfel</b>. Ström genom kroppen kan ge skador, ibland först en stund efteråt.",
-        safety:"Andas du tungt, känns hjärtat oregelbundet eller har du pacemaker, ring <a href=\"tel:112\">112</a>. Annars, använd inte det som gav stöt och ring <a href=\"tel:1177\">1177</a>. Strömgenomgång bör alltid kollas upp."},
-      {id:"vatten",label:"Vatten nära elen",sev:"akut",act112:false,
+        safety:"Andas du tungt, känns hjärtat oregelbundet eller har du pacemaker, ring <a href=\"tel:112\">112</a>. Annars, använd inte det som gav stöt och ring <a href=\"tel:1177\">1177</a> och beskriv att du fått ström genom kroppen. De avgör om du behöver vård."},
+      {id:"vatten",label:"Vatten nära elen",sev:"akut",
         risk:"Vatten vid uttag, elcentral eller ledning kan göra metall <b>strömförande</b>. Då är risken framför allt elstöt, och vanligt kranvatten leder ström förvånansvärt bra.",
-        safety:"Rör inget vått nära elen. Kan du bryta strömmen säkert, gör det. Har du redan känt ström, ring <a href=\"tel:1177\">1177</a>."}
+        safety:"Rör inget vått nära elen. Kan du bryta strömmen säkert, gör det. Har du redan känt ström, ring <a href=\"tel:1177\">1177</a>."},
+      {id:"surr",label:"Det surrar eller knäpper i elcentralen",sev:"akut",
+        risk:"Ett surrande eller knäppande ljud från centralen eller ett uttag är ofta en <b>glappkontakt</b>, en lös skruv som sakta hettas upp. Det är samma fel som ligger bakom de flesta elbränder.",
+        safety:"Bryt strömmen på huvudbrytaren om du kan, och rör inte centralen. Känner du brännlukt eller ser rök, gå ut och ring <a href=\"tel:112\">112</a>."},
+      {id:"vitvara",label:"En maskin ryker eller luktar bränt",sev:"akut",
+        risk:"Rök eller brännlukt från en tvättmaskin, diskmaskin eller torktumlare kan vara ett skadat värmeelement eller en kortslutning som tänder plasten. Vitvaror är en <b>vanlig brandkälla</b>.",
+        safety:"Dra ur maskinen och slå av dess säkring. Ser du rök eller lågor, gå ut direkt och ring <a href=\"tel:112\">112</a>."},
+      {id:"laddbox",label:"Laddboxen blir varm när bilen laddar",sev:"akut",
+        risk:"En laddbox eller ett uttag som blir varmt när bilen laddar är en <b>glappkontakt</b> som hettas upp under många timmars hög ström. Det kan bli så varmt att plasten börjar smälta, och fortsatt laddning kan leda till brand.",
+        safety:"Avbryt laddningen och använd inte uttaget tills en elektriker sett på det."},
+      {id:"aska",label:"Efter åska eller överspänning",sev:"varn",
+        risk:"Ett åsknedslag i närheten kan skicka en <b>överspänning</b> genom elen som kan skada elektronik och den fasta installationen, även om allt verkar fungera. Elsäkerhetsverket rekommenderar en koll efter åska.",safety:""}
     ];
-    var SEV={akut:["d-akut","t-akut","Akut"],ring:["d-ring","t-ring","Ring oss"]};
+    var SEV={akut:["d-akut","t-akut","Akut"],varn:["d-varn","t-varn","Varning"]};
 
     function track(ev,d){ window.dataLayer=window.dataLayer||[]; window.dataLayer.push(Object.assign({event:"ampy_ej_"+ev},d||{})); }
 
     var list=document.getElementById("ebList");
     SYMPTOMS.forEach(function(s,i){
-      var sev=SEV[s.sev], open=i===0;
-      var li=document.createElement("li"); li.className="eb__item";
+      var sev=SEV[s.sev];
+      var li=document.createElement("li"); li.className="eb__item"+(i>=VISIBLE?" eb__item--more":"");
       var safety=s.safety?'<p class="eb__safety">'+FIRE+'<span>'+s.safety+'</span></p>':'';
-      var pill=s.act112?'<a class="eb__112" href="tel:112">'+PHONE_PLAIN+'Ring 112 först</a>':'';
       li.innerHTML=
-        '<button class="eb__row" id="row-'+s.id+'" aria-expanded="'+open+'" aria-controls="pan-'+s.id+'">'+
+        '<button class="eb__row" id="row-'+s.id+'" aria-expanded="false" aria-controls="pan-'+s.id+'">'+
           '<span class="eb__dot '+sev[0]+'"></span>'+
           '<span class="eb__label">'+s.label+'</span>'+
           '<span class="eb__tag '+sev[1]+'">'+sev[2]+'</span>'+CHEV+
@@ -218,20 +232,35 @@
         '<div class="eb__panel"><div class="eb__panel-in"><div class="eb__panel-pad" id="pan-'+s.id+'" role="region" aria-labelledby="row-'+s.id+'">'+
           '<p class="eb__risk">'+s.risk+'</p>'+
           safety+
-          '<div class="eb__act">'+pill+
-            '<a class="eb__cta" href="tel:'+PHONE_TEL+'" data-call="'+s.id+'">'+
-              '<span class="eb__cta-txt">Ring eljouren <b>'+PHONE_DISPLAY+'</b></span>'+CTA_ICON+
-            '</a>'+
-          '</div>'+
+          '<div class="eb__act"><a class="eb__cta" href="tel:'+PHONE_TEL+'" data-call="'+s.id+'">'+
+            '<span class="eb__cta-txt">Ring eljouren <b>'+PHONE_DISPLAY+'</b></span>'+CTA_ICON+
+          '</a></div>'+
         '</div></div></div>';
       list.appendChild(li);
     });
 
+    // "se fler" — desktop length control (hidden items always shown on mobile, button hidden there)
+    var hidden=SYMPTOMS.length-VISIBLE;
+    if(hidden>0){
+      var moreLi=document.createElement("li"); moreLi.className="eb__more-li";
+      moreLi.innerHTML='<button class="eb__more" type="button" aria-expanded="false">'+
+        '<span class="eb__more-txt">Se fler tecken ('+hidden+')</span>'+
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>';
+      list.appendChild(moreLi);
+      var moreBtn=moreLi.querySelector(".eb__more");
+      moreBtn.addEventListener("click",function(){
+        var open=list.classList.toggle("is-open");
+        moreBtn.setAttribute("aria-expanded",open?"true":"false");
+        moreBtn.querySelector(".eb__more-txt").textContent=open?"Visa färre":"Se fler tecken ("+hidden+")";
+        if(open){ var first=list.querySelector(".eb__item--more .eb__row"); if(first) first.focus(); }
+        track("see_more",{open:open});
+      });
+    }
+
     // inert every closed panel so its tel: links stay out of the tab order / a11y tree
     function syncInert(){
       Array.prototype.forEach.call(list.querySelectorAll(".eb__row"),function(r){
-        var open=r.getAttribute("aria-expanded")==="true";
-        r.nextElementSibling.toggleAttribute("inert",!open);
+        r.nextElementSibling.toggleAttribute("inert", r.getAttribute("aria-expanded")!=="true");
       });
     }
     syncInert();
@@ -241,10 +270,10 @@
       var c1177=e.target.closest('a[href="tel:1177"]'); if(c1177){ track("cta_1177_click",{}); return; }
       var call=e.target.closest("[data-call]"); if(call){ track("cta_call_click",{symptom:call.getAttribute("data-call")}); return; }
       var row=e.target.closest(".eb__row"); if(!row) return;
-      if(row.getAttribute("aria-expanded")==="true") return; // keep one always open (a visible CTA stays)
+      var wasOpen=row.getAttribute("aria-expanded")==="true";
       Array.prototype.forEach.call(list.querySelectorAll(".eb__row"),function(r){ r.setAttribute("aria-expanded","false"); });
-      row.setAttribute("aria-expanded","true"); syncInert();
-      track("symptom_select",{symptom:row.id.replace("row-","")});
+      if(!wasOpen){ row.setAttribute("aria-expanded","true"); track("symptom_select",{symptom:row.id.replace("row-","")}); }
+      syncInert();
     });
     document.querySelector('.eb__call').addEventListener("click",function(e){ if(e.target.closest("[data-call]")) track("cta_call_click",{symptom:"aside"}); });
     track("view",{});
