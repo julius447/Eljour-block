@@ -33,7 +33,7 @@
   .eb__title-a, .eb__title-b{ display:block; }
 
   /* ---- global green call CTA ---- */
-  .eb__cta{ display:flex; align-items:center; justify-content:space-between; gap:1.4rem; width:100%;
+  .eb__cta{ position:relative; display:flex; align-items:center; justify-content:space-between; gap:1.4rem; width:100%;
     padding:1.5rem 2rem; min-height:5.8rem; border-radius:var(--r); background:var(--cta-grad);
     border:1px solid rgba(255,255,255,.12); box-shadow:var(--cta-shadow), inset 0 1px 0 rgba(255,255,255,.22);
     color:var(--cta-ink); font-size:clamp(1.5rem,1.4vw,1.75rem); font-weight:600; text-decoration:none;
@@ -41,13 +41,14 @@
   .eb__cta:hover{ transform:translateY(-1px);
     box-shadow:0 1.4rem 3.2rem rgba(4,110,90,.40), inset 0 1px 0 rgba(255,255,255,.22); }
   .eb__cta:focus-visible{ outline:2px solid var(--teal-dark); outline-offset:3px; }
-  .eb__cta-txt{ display:inline-flex; align-items:center; gap:.7rem; white-space:nowrap; min-width:0; }
+  .eb__cta-txt{ display:inline-flex; align-items:baseline; gap:.6rem; white-space:nowrap; min-width:0; }
   .eb__cta-txt b{ font-weight:600; }
   .eb__cta-ic{ display:inline-flex; align-items:center; justify-content:center; flex:none; width:2.4rem; height:2.4rem; }
   .eb__cta-ic svg{ width:2.4rem; height:2.4rem; }
   /* green "live" bubble pulse on EVERY call CTA — same effect as "Jour öppen just nu",
-     in neon-mint so it reads clearly on the deep-green button */
-  .eb__cta-dot{ position:relative; flex:none; width:1rem; height:1rem; border-radius:50%; background:#55ff9a; }
+     in neon-mint, centred along the bottom edge of the button */
+  .eb__cta-dot{ position:absolute; left:50%; bottom:.7rem; transform:translateX(-50%); pointer-events:none;
+    width:1rem; height:1rem; border-radius:50%; background:#55ff9a; }
   .eb__cta-dot::after{ content:""; position:absolute; inset:0; border-radius:50%; background:#55ff9a;
     animation:eb-cta-pulse 2s ease-out infinite; }
   @keyframes eb-cta-pulse{ 0%{ transform:scale(1); opacity:.6 } 100%{ transform:scale(2.6); opacity:0 } }
@@ -163,7 +164,7 @@
               <li><span class="eb__trust-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3.6 12.4l8-8a2 2 0 0 1 1.4-.6H19a1.5 1.5 0 0 1 1.5 1.5v6a2 2 0 0 1-.6 1.4l-8 8a1.5 1.5 0 0 1-2.1 0l-6.6-6.6a1.5 1.5 0 0 1 0-2.1z" stroke-linejoin="round"/><circle cx="15.8" cy="8.2" r="1.3"/></svg></span> Tydligt pris innan vi rycker ut, inga dolda avgifter.</li>
             </ul>
             <a class="eb__cta" href="tel:+46102657979" data-call="aside">
-              <span class="eb__cta-txt"><span class="eb__cta-dot" aria-hidden="true"></span>Ring eljouren <b>010-265 79 79</b></span>
+              <span class="eb__cta-txt">Ring eljouren <b>010-265 79 79</b></span><span class="eb__cta-dot" aria-hidden="true"></span>
               <span class="eb__cta-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.5 15.5 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.2.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.3 1z"/><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M15.8 2.6a6.4 6.4 0 0 1 5.6 5.6M15.2 6.1a3 3 0 0 1 2.7 2.7"/></svg></span>
             </a>
           </div>
@@ -237,7 +238,7 @@
           '<p class="eb__risk">'+s.risk+'</p>'+
           safety+
           '<div class="eb__act"><a class="eb__cta" href="tel:'+PHONE_TEL+'" data-call="'+s.id+'">'+
-            '<span class="eb__cta-txt"><span class="eb__cta-dot" aria-hidden="true"></span>Ring eljouren <b>'+PHONE_DISPLAY+'</b></span>'+CTA_ICON+
+            '<span class="eb__cta-txt">Ring eljouren <b>'+PHONE_DISPLAY+'</b></span>'+CTA_ICON+'<span class="eb__cta-dot" aria-hidden="true"></span>'+
           '</a></div>'+
         '</div></div></div>';
       list.appendChild(li);
