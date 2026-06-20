@@ -184,21 +184,35 @@
     var CTA_ICON='<span class="eb__cta-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.5 15.5 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.2.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.3 1z"/><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M15.8 2.6a6.4 6.4 0 0 1 5.6 5.6M15.2 6.1a3 3 0 0 1 2.7 2.7"/></svg></span>';
     var CHEV='<svg class="eb__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
     var FIRE='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c1 3-1 5-2 6-1.4 1.4-3 3-3 5.5A5.5 5.5 0 0 0 17.5 13c0-2-1-3.5-2-4.5.2 1.2-.3 2.2-1 2.6.6-3-1.5-6-2.5-9.1z"/></svg>';
-    // visible 7 keep brännlukt/gnistor (112) + elstöt (112/1177) on screen; the 5 under "Se fler"
-    // (vatten, surr, vitvara, laddbox, åska) carry only generic/no emergency-number guidance. sev: akut | varn
+    // Order + visibility are owner-specified (2026-06-19): VISIBLE=7 -> "Se fler tecken (6)".
+    // CANDOUR FLAG for sign-off: this order puts akut symptoms whose panels hold the only emergency-number
+    // guidance (gnistor 112, vitvara 112, elstöt 112/1177, vatten 1177) under "Se fler". sev: akut | varn
     var SYMPTOMS=[
+      {id:"sakring",label:"Säkring löser ut",sev:"varn",
+        risk:"En säkring som löser ut en enstaka gång är oftast <b>överbelastning</b>, för mycket som drar ström på samma grupp samtidigt. Löser samma säkring ut gång på gång, eller direkt när du slår på den, kan det vara en kortslutning i en apparat eller i den fasta installationen.",safety:""},
       {id:"stromavbrott",label:"Strömavbrott",sev:"varn",
         risk:"Är det mörkt hos grannarna också är det <b>elnätet</b>, inte ditt fel. Är det bara hos dig är det ett fel i din anläggning som behöver felsökas.",safety:""},
-      {id:"sakring",label:"Säkring eller jordfelsbrytare löser ut",sev:"varn",
-        risk:"En enstaka gång är oftast bara överlast. Men löser den ut <b>gång på gång</b> är det ofta ett jord- eller isolationsfel, ibland fukt som trängt in i installationen, och då finns en brandrisk. Tvinga inte tillbaka den om och om igen.",safety:""},
+      {id:"jordfel",label:"Jordfelsbrytare löser ut",sev:"varn",
+        risk:"Jordfelsbrytaren bryter strömmen så fort den känner att ström <b>läcker ut</b>, oftast från en trasig apparat eller från fukt som trängt in i ett uttag eller en utomhusinstallation. Återställ den en gång. Slår den ifrån igen sitter felet kvar och bör spåras av en elektriker.",safety:""},
+      {id:"laddbox",label:"Laddboxen blir varm när bilen laddar",sev:"akut",
+        risk:"En laddbox eller ett uttag som blir varmt när bilen laddar är en <b>glappkontakt</b> som hettas upp under många timmars hög ström. Det kan bli så varmt att plasten börjar smälta, och fortsatt laddning kan leda till brand.",
+        safety:"Avbryt laddningen och använd inte uttaget tills en elektriker sett på det."},
+      {id:"flimmer",label:"Flimrande ljus",sev:"varn",
+        risk:"Flimrar flera lampor samtidigt, eller en kraftigt, är det oftast ett fel i den fasta installationen, ett glapp eller en lös nollanslutning. Ett <b>nollfel</b> kan skicka överspänning rakt in i din elektronik.",safety:""},
+      {id:"surr",label:"Det surrar eller knäpper i elcentralen",sev:"akut",
+        risk:"Ett surrande eller knäppande ljud från centralen eller ett uttag är ofta en <b>glappkontakt</b>, en lös skruv som sakta hettas upp. Det är samma fel som ligger bakom de flesta elbränder.",
+        safety:"Bryt strömmen på huvudbrytaren om du kan, och rör inte centralen. Känner du brännlukt eller ser rök, gå ut och ring <a href=\"tel:112\">112</a>."},
       {id:"branlukt",label:"Brännlukt eller rök",sev:"akut",
         risk:"Brännlukt eller lukt av smält plast betyder att det <b>redan blivit hett</b> någonstans i elen. Värmen kan sitta dold bakom en vägg, och det är så elbränder börjar.",
         safety:"Slå av huvudbrytaren. Ser du rök eller lågor, gå ut direkt och ring <a href=\"tel:112\">112</a>."},
-      {id:"flimmer",label:"Flimrande ljus",sev:"varn",
-        risk:"Flimrar flera lampor samtidigt, eller en kraftigt, är det oftast ett fel i den fasta installationen, ett glapp eller en lös nollanslutning. Ett <b>nollfel</b> kan skicka överspänning rakt in i din elektronik.",safety:""},
+      {id:"aska",label:"Efter åska eller överspänning",sev:"varn",
+        risk:"Ett åsknedslag i närheten kan skicka en <b>överspänning</b> genom elen som kan skada elektronik och den fasta installationen, även om allt verkar fungera. Elsäkerhetsverket rekommenderar en koll efter åska.",safety:""},
       {id:"varmt-uttag",label:"Varmt eller missfärgat uttag",sev:"akut",
         risk:"Ett uttag ska aldrig vara varmt. Värme, missfärgning eller svarta märken är en <b>glappkontakt</b> som byggt hetta, ofta dolt inne i väggen.",
         safety:"Dra ur det som sitter i och använd inte uttaget."},
+      {id:"vitvara",label:"En maskin ryker eller luktar bränt",sev:"akut",
+        risk:"Rök eller brännlukt från en tvättmaskin, diskmaskin eller torktumlare kan vara ett skadat värmeelement eller en kortslutning som tänder plasten. Vitvaror är en <b>vanlig brandkälla</b>.",
+        safety:"Dra ur maskinen och slå av dess säkring. Ser du rök eller lågor, gå ut direkt och ring <a href=\"tel:112\">112</a>."},
       {id:"gnistor",label:"Gnistor eller smäll",sev:"akut",
         risk:"Gnistor, en smäll eller ett sprakande ljud är en <b>ljusbåge</b>. Den blir tusentals grader på ett ögonblick och kan tända det som finns runt omkring.",
         safety:"Slå av huvudbrytaren. Ser du rök eller lågor, gå ut direkt och ring <a href=\"tel:112\">112</a>."},
@@ -207,18 +221,7 @@
         safety:"Andas du tungt, känns hjärtat oregelbundet eller har du pacemaker, ring <a href=\"tel:112\">112</a>. Annars, använd inte det som gav stöt och ring <a href=\"tel:1177\">1177</a> och beskriv att du fått ström genom kroppen. De avgör om du behöver vård."},
       {id:"vatten",label:"Vatten nära elen",sev:"akut",
         risk:"Vatten vid uttag, elcentral eller ledning kan göra metall <b>strömförande</b>. Då är risken framför allt elstöt, och vanligt kranvatten leder ström förvånansvärt bra.",
-        safety:"Rör inget vått nära elen. Kan du bryta strömmen säkert, gör det. Har du redan känt ström, ring <a href=\"tel:1177\">1177</a>."},
-      {id:"surr",label:"Det surrar eller knäpper i elcentralen",sev:"akut",
-        risk:"Ett surrande eller knäppande ljud från centralen eller ett uttag är ofta en <b>glappkontakt</b>, en lös skruv som sakta hettas upp. Det är samma fel som ligger bakom de flesta elbränder.",
-        safety:"Bryt strömmen på huvudbrytaren om du kan, och rör inte centralen. Känner du brännlukt eller ser rök, gå ut och ring <a href=\"tel:112\">112</a>."},
-      {id:"vitvara",label:"En maskin ryker eller luktar bränt",sev:"akut",
-        risk:"Rök eller brännlukt från en tvättmaskin, diskmaskin eller torktumlare kan vara ett skadat värmeelement eller en kortslutning som tänder plasten. Vitvaror är en <b>vanlig brandkälla</b>.",
-        safety:"Dra ur maskinen och slå av dess säkring. Ser du rök eller lågor, gå ut direkt och ring <a href=\"tel:112\">112</a>."},
-      {id:"laddbox",label:"Laddboxen blir varm när bilen laddar",sev:"akut",
-        risk:"En laddbox eller ett uttag som blir varmt när bilen laddar är en <b>glappkontakt</b> som hettas upp under många timmars hög ström. Det kan bli så varmt att plasten börjar smälta, och fortsatt laddning kan leda till brand.",
-        safety:"Avbryt laddningen och använd inte uttaget tills en elektriker sett på det."},
-      {id:"aska",label:"Efter åska eller överspänning",sev:"varn",
-        risk:"Ett åsknedslag i närheten kan skicka en <b>överspänning</b> genom elen som kan skada elektronik och den fasta installationen, även om allt verkar fungera. Elsäkerhetsverket rekommenderar en koll efter åska.",safety:""}
+        safety:"Rör inget vått nära elen. Kan du bryta strömmen säkert, gör det. Har du redan känt ström, ring <a href=\"tel:1177\">1177</a>."}
     ];
     var SEV={akut:["d-akut","t-akut","Akut"],varn:["d-varn","t-varn","Varning"]};
 
