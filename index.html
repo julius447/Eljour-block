@@ -45,9 +45,9 @@
   .eb__cta-txt b{ font-weight:600; }
   .eb__cta-ic{ display:inline-flex; align-items:center; justify-content:center; flex:none; width:2.4rem; height:2.4rem; }
   .eb__cta-ic svg{ width:2.4rem; height:2.4rem; }
-  /* green "live" bubble pulse on EVERY call CTA — same effect as "Jour öppen just nu",
-     in neon-mint, centred along the bottom edge of the button */
-  .eb__cta-dot{ position:absolute; left:50%; bottom:0; transform:translate(-50%,50%); pointer-events:none;
+  /* green "live" bubble pulse on the call CTAs — MOBILE ONLY (hidden on desktop where the CTA already
+     dominates and a 2nd green pulse next to "Jour öppen just nu" reads busy). In neon-mint, straddling the bottom edge. */
+  .eb__cta-dot{ display:none; position:absolute; left:50%; bottom:0; transform:translate(-50%,50%); pointer-events:none;
     width:1rem; height:1rem; border-radius:50%; background:#55ff9a; }
   .eb__cta-dot::after{ content:""; position:absolute; inset:0; border-radius:50%; background:#55ff9a;
     animation:eb-cta-pulse 2s ease-out infinite; }
@@ -135,6 +135,7 @@
     .eb__ground--d{ display:none; }
     .eb__ground--m{ display:block; }
     .eb__act .eb__cta{ max-width:none; }
+    .eb__cta-dot{ display:block; }
   }
   @media (max-width:480px){
     .eb__cta{ font-size:1.5rem; padding:1.4rem 1.6rem; }
